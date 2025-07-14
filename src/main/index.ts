@@ -1,5 +1,15 @@
-import { app, shell, BrowserWindow, ipcMain, Tray, Menu, nativeImage } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  Tray,
+  Menu,
+  nativeImage,
+  globalShortcut
+} from 'electron'
 import { join } from 'path'
+import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
@@ -93,11 +103,19 @@ function createTray(): void {
     // 托盘图标路径 - 兼容开发和构建环境
     let trayIconPath: string
     if (is.dev) {
-      // 开发模式：从项目根目录获取
-      trayIconPath = join(process.cwd(), 'build/tray-icon.png')
+      // 开发模式：从项目根目录获取（支持两个位置）
+      const devPath1 = join(process.cwd(), 'resources/tray-icon.png')
+      const devPath2 = join(process.cwd(), 'build/tray-icon.png')
+
+      // 尝试resources目录，如果不存在则使用build目录
+      if (existsSync(devPath1)) {
+        trayIconPath = devPath1
+      } else {
+        trayIconPath = devPath2
+      }
     } else {
-      // 构建模式：使用相对路径
-      trayIconPath = join(__dirname, '../../build/tray-icon.png')
+      // 构建模式：使用app.asar.unpacked/resources目录
+      trayIconPath = join(process.resourcesPath, 'app.asar.unpacked', 'resources', 'tray-icon.png')
     }
 
     console.log('🔍 托盘图标路径:', trayIconPath)
@@ -118,7 +136,8 @@ function createTray(): void {
     tray = new Tray(trayIcon)
 
     // 设置托盘提示文本
-    tray.setToolTip('FloatQuickTrans - 单击：显示/隐藏窗口，右键：菜单')
+    const shortcutText = process.platform === 'darwin' ? '⌘⇧Y 或 ⌥Space' : 'Ctrl+Shift+Y'
+    tray.setToolTip(`FloatQuickTrans - 单击：显示/隐藏窗口，快捷键：${shortcutText}，右键：菜单`)
 
     // 创建托盘右键菜单
     const contextMenu = Menu.buildFromTemplate([
@@ -219,6 +238,58 @@ function updateTrayMenu(): void {
     ])
 
     tray.setContextMenu(contextMenu)
+  }
+}
+
+// 注册全局快捷键
+function registerGlobalShortcuts(): void {
+  try {
+    // ⌘ + ⇧ + Y - 显示/隐藏翻译窗口
+    const toggleShortcut = process.platform === 'darwin' ? 'Command+Shift+Y' : 'Ctrl+Shift+Y'
+
+    const registered = globalShortcut.register(toggleShortcut, () => {
+      console.log('🎯 全局快捷键触发:', toggleShortcut)
+
+      if (mainWindow) {
+        if (mainWindow.isVisible() && mainWindow.isFocused()) {
+          // 窗口可见且获得焦点：隐藏窗口
+          hideWindow()
+        } else {
+          // 窗口隐藏或失去焦点：显示并聚焦窗口
+          showWindow()
+        }
+      }
+    })
+
+    if (registered) {
+      console.log(`✅ 全局快捷键注册成功: ${toggleShortcut}`)
+    } else {
+      console.error(`❌ 全局快捷键注册失败: ${toggleShortcut}`)
+    }
+
+    // 可选：添加第二个快捷键 Option+Space (macOS专用)
+    if (process.platform === 'darwin') {
+      const altShortcut = 'Option+Space'
+      const altRegistered = globalShortcut.register(altShortcut, () => {
+        console.log('🎯 备用快捷键触发:', altShortcut)
+
+        if (mainWindow) {
+          if (mainWindow.isVisible()) {
+            hideWindow()
+          } else {
+            showWindow()
+          }
+        }
+      })
+
+      if (altRegistered) {
+        console.log(`✅ 备用快捷键注册成功: ${altShortcut}`)
+      } else {
+        console.warn(`⚠️ 备用快捷键注册失败: ${altShortcut} (可能被其他应用占用)`)
+      }
+    }
+  } catch (error) {
+    console.error('❌ 注册全局快捷键时出错:', error)
   }
 }
 
@@ -339,6 +410,7 @@ app.whenReady().then(() => {
 
   createWindow()
   createTray()
+  registerGlobalShortcuts()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -353,12 +425,17 @@ app.on('window-all-closed', () => {
   // 应用会在后台运行，通过托盘图标控制
 })
 
-// 确保托盘图标在应用退出时被清理
+// 确保托盘图标和全局快捷键在应用退出时被清理
 app.on('before-quit', () => {
+  // 清理托盘图标
   if (tray) {
     tray.destroy()
     tray = null
   }
+
+  // 注销所有全局快捷键
+  globalShortcut.unregisterAll()
+  console.log('🧹 已清理全局快捷键')
 })
 
 // In this file you can include the rest of your app's specific main process

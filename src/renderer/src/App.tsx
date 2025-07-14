@@ -559,11 +559,25 @@ function App(): React.JSX.Element {
               {targetLanguage}
             </button>
           )}
-          | Cmd+Enter Translate | ESC Close |
+          | Cmd+Enter Translate | ESC Close | ⌘⇧Y Global Toggle
+        </p>
+        <p className="help-text" style={{ marginTop: '2px' }}>
           <button className="help-button" onClick={() => setIsSettingsOpen(true)}>
             settings
           </button>
-          | about
+          |{' '}
+          <button
+            className="help-button"
+            onClick={() => window.open('https://github.com/hughedward/FloatQuickTrans', '_blank')}
+            style={
+              {
+                // @ts-ignore WebkitAppRegion is not in React.CSSProperties type but is valid CSS property
+                WebkitAppRegion: 'no-drag'
+              } as React.CSSProperties
+            }
+          >
+            about
+          </button>
         </p>
       </div>
 
