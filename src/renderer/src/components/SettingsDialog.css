@@ -1,0 +1,560 @@
+/* 设置对话框样式 */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+}
+
+.settings-dialog {
+  width: 520px;
+  max-width: 90vw;
+  max-height: 85vh;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  animation: dialogSlideIn 0.3s ease-out;
+}
+
+@keyframes dialogSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* 设置头部 */
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 无缝设置头部 */
+.settings-header-seamless {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 8px 16px;
+  background: transparent;
+}
+
+.settings-header h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.settings-header-seamless h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+/* 设置内容 */
+.settings-content {
+  overflow-y: auto;
+  max-height: 85vh;
+}
+
+.settings-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.settings-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* 当前模型选择器 */
+.current-provider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 16px 12px 16px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.current-provider label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  min-width: 80px;
+}
+
+.provider-select {
+  flex: 1;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.provider-select:focus {
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.provider-select option {
+  background: #333333;
+  color: #ffffff;
+}
+
+/* 模型容器 */
+.models-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 16px 8px 16px;
+}
+
+/* 模型卡片 */
+.model-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px;
+  transition: all 0.2s ease;
+}
+
+.model-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.model-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.model-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.model-status {
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.model-status.connected {
+  background: rgba(74, 222, 128, 0.2);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.model-status.failed {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.model-status.testing {
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
+.model-status.unknown {
+  background: rgba(156, 163, 175, 0.2);
+  border: 1px solid rgba(156, 163, 175, 0.3);
+  color: #9ca3af;
+}
+
+/* 状态文本样式 - 纯文字显示，不是按钮 */
+.model-status-text {
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  min-width: 70px;
+}
+
+.model-status-text.connected {
+  color: #8db78f;
+}
+
+.model-status-text.failed {
+  color: #ef4444;
+}
+
+.model-status-text.testing {
+  color: #fbbf24;
+}
+
+.model-status-text.unknown {
+  color: #9ca3af;
+}
+
+/* 模型配置 */
+.model-config {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.config-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.config-row-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.config-row-horizontal label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.config-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.config-info-row label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.config-row-compact {
+  display: flex;
+  gap: 16px;
+  font-size: 10px;
+}
+
+.config-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.config-value {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.config-row label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 移除了 .api-key-input，现在使用 .config-row-horizontal */
+
+.api-key-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 150px;
+}
+
+.api-key-field {
+  width: 100%;
+  padding: 6px 40px 6px 10px; /* 右侧留空间给眼睛按钮 */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 0; /* 确保在flex布局中可以收缩 */
+}
+
+.api-key-field:focus {
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.api-key-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.toggle-visibility,
+.test-connection {
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.toggle-visibility {
+  padding: 6px;
+  min-width: 32px;
+}
+
+.toggle-visibility-inside {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.toggle-visibility-inside:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.toggle-visibility-inside svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  transition: stroke 0.2s ease;
+}
+
+.test-connection {
+  padding: 6px 12px;
+  min-width: 50px;
+  margin-right: 8px;
+}
+
+.toggle-visibility:hover,
+.test-connection:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.test-connection:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.base-url-field,
+.model-field {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  outline: none;
+}
+
+/* 设置底部 */
+.settings-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 16px 16px;
+  background: transparent;
+}
+
+.action-feedback {
+  flex: 1;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.feedback-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  animation: feedbackFadeIn 0.3s ease-in;
+}
+
+.auto-save-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  animation: feedbackFadeIn 0.3s ease-in;
+  margin-left: 8px;
+}
+
+@keyframes feedbackFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.test-all-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.test-all-btn {
+  background: rgba(156, 163, 175, 0.2);
+  border: 1px solid rgba(156, 163, 175, 0.3);
+  color: #9ca3af;
+}
+
+.test-all-btn:hover:not(:disabled) {
+  background: rgba(156, 163, 175, 0.3);
+  transform: translateY(-1px);
+}
+
+.test-all-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .settings-dialog {
+    width: 95vw;
+    max-height: 90vh;
+  }
+
+  .settings-header {
+    padding: 12px 16px;
+  }
+
+  .settings-content {
+    padding: 16px;
+  }
+
+  .config-row-horizontal {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .config-row-horizontal label {
+    width: 60px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .api-key-input-wrapper {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .test-connection {
+    align-self: center;
+  }
+
+  .settings-footer {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .action-feedback {
+    text-align: center;
+    min-height: 16px;
+  }
+
+  .footer-buttons {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,536 @@
+/* 全局样式重置 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: transparent !important;
+  /* user-select: none; */ /* 🔧 临时注释掉，测试是否影响点击事件 */
+  overflow: hidden; /* 🎯 恢复圆角效果 */
+}
+
+#root {
+  background: transparent !important;
+}
+
+/* 🏷️ 窗口主体透明度控制 - 可精确调节 */
+.glass-effect {
+  /* 🏷️ 主体磨砂效果 - 可以启用来增加朦胧感 */
+  /* backdrop-filter: blur(5px); */
+  /* -webkit-backdrop-filter: blur(5px); */
+
+  /* 🏷️ 主体背景透明度 - 数值越大越不透明 */
+  background: rgba(255, 255, 255, 0.51); /* 调整这里：0=完全透明，0.01=很淡，0.05=淡，0.1=明显 */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* 🏷️ 主窗口边框透明度 - 0.15 = 15%白色 */
+}
+
+.glass-effect.dark {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 网页端其他样式 */
+.focus-ring {
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.button-press {
+  transition: transform 0.1s ease;
+}
+
+.button-press:active {
+  transform: scale(0.95);
+}
+
+/* 🏷️ 主容器外观控制 */
+.app-container {
+  width: 100vw;
+  height: auto; /* 🎯 关键改变：让内容决定高度，不再填满窗口 */
+  min-height: 196px; /* 🎯 保证最小高度，保持您原来满意的间距 */
+  border-radius: 10px; /* 🎯 匹配macOS系统默认窗口圆角 */
+  overflow: hidden; /* 🎯 恢复圆角效果 */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  -webkit-app-region: drag; /* 整个容器可拖拽 */
+}
+
+/* 🔍 连接状态指示器 */
+.connection-status {
+  padding: 12px 20px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  -webkit-app-region: drag;
+}
+
+.status-indicator {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+}
+
+.status-indicator.unknown {
+  background: rgba(156, 163, 175, 0.2);
+  color: #6b7280;
+}
+
+.status-indicator.testing {
+  background: rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.connected {
+  background: rgba(34, 197, 94, 0.2);
+  color: #16a34a;
+}
+
+.status-indicator.failed {
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+.retry-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-app-region: no-drag;
+}
+
+.retry-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-1px);
+}
+
+.retry-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 状态消息 */
+.status-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 0;
+  animation: slideDown 0.3s ease-out;
+}
+
+.status-message.success {
+  background: rgba(52, 211, 153, 0.25);
+  color: #059669;
+  border-bottom: 1px solid rgba(52, 211, 153, 0.4);
+  backdrop-filter: blur(15px);
+}
+
+.status-message.error {
+  background: rgba(248, 113, 113, 0.25);
+  color: #dc2626;
+  border-bottom: 1px solid rgba(248, 113, 113, 0.4);
+  backdrop-filter: blur(15px);
+}
+
+/* 标题栏 - 可拖拽区域 */
+.title-bar {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  -webkit-app-region: drag; /* 启用拖拽 */
+  cursor: grab;
+}
+
+.title-bar:active {
+  cursor: grabbing;
+}
+
+.title-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none; /* 防止文本阻止拖拽 */
+}
+
+.title-info h2 {
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.super-float-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+}
+
+.toggle-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  -webkit-app-region: no-drag; /* 按钮不参与拖拽 */
+  backdrop-filter: blur(10px);
+}
+
+.toggle-button.active {
+  background: rgba(107, 114, 128, 0.8);
+  color: white;
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
+}
+
+.toggle-button.active:hover {
+  background: rgba(75, 85, 99, 0.9);
+  transform: translateY(-1px);
+}
+
+.toggle-button.inactive {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.toggle-button.inactive:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-1px);
+}
+
+/* 输入区域 */
+.input-section {
+  padding: 20px;
+  flex: 1; /* 🎯 恢复弹性布局，保持您原来满意的间距 */
+}
+
+.input-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  -webkit-app-region: no-drag; /* 输入框不参与拖拽 */
+}
+
+.input-textarea::placeholder {
+  color: rgba(55, 65, 81, 0.6);
+}
+
+.input-textarea:focus {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.input-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-group {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.translate-button {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-app-region: no-drag; /* 按钮不参与拖拽 */
+}
+
+.translate-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.translate-button:active {
+  transform: translateY(0);
+}
+
+.translate-button:disabled {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(156, 163, 175, 0.3);
+}
+
+/* 结果显示区域 */
+.result-section {
+  padding: 0 20px 2px;
+  /* border-top: 1px solid rgba(255, 255, 255, 0.08); */
+  background: transparent;
+  flex-shrink: 0; /* 🎯 不被压缩，确保结果完整显示 */
+}
+
+.result-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  max-height: 120px;
+  overflow-y: auto;
+  -webkit-app-region: no-drag; /* 结果框不参与拖拽，方便选择文本 */
+}
+
+/* 结果框专用滚动条样式 */
+.result-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.result-box::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.result-box::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.result-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.result-box p {
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  user-select: text; /* 允许选择结果文本 */
+  cursor: text;
+  white-space: pre-wrap; /* 🎯 保持换行符和空格，允许自动换行 */
+}
+
+/* 真正的Result placeholder效果 */
+.result-placeholder {
+  color: rgba(55, 65, 81, 0.4) !important; /* 🎯 更淡的颜色，类似input placeholder */
+  font-style: italic; /* 🎯 斜体，突出placeholder特性 */
+  font-weight: 400; /* 🎯 正常字重 */
+  font-size: 14px; /* 🎯 与正文相同大小 */
+  user-select: none; /* 🎯 不可选择，因为它只是placeholder */
+  cursor: default; /* 🎯 默认光标，不是文本光标 */
+}
+
+/* 🌊 加载状态文本 */
+.loading-text {
+  color: #2563eb !important;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 14px;
+  user-select: none;
+  cursor: default;
+  animation: pulse 1.5s infinite;
+}
+
+/* 📝 翻译结果文本 */
+.result-text {
+  color: #374151 !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  user-select: text;
+  cursor: text;
+  white-space: pre-wrap; /* 保持换行格式 */
+  word-wrap: break-word;
+}
+
+/* 帮助区域 - 🎯 改为正常文档流，参与高度计算 */
+.help-section {
+  padding: 12px 20px;
+  background: transparent;
+  flex-shrink: 0; /* 🎯 防止被压缩 */
+  /* margin-bottom: 50px; */
+  /* border-top: 1px solid rgba(255, 255, 255, 0.08); */
+}
+
+.help-text {
+  color: rgba(55, 65, 81, 0.7);
+  font-size: 12px;
+  text-align: center;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.help-button {
+  background: none;
+  border: none;
+  color: rgba(55, 65, 81, 0.8);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  -webkit-app-region: no-drag;
+}
+
+.help-button:hover {
+  background: rgba(55, 65, 81, 0.1);
+  color: rgba(55, 65, 81, 1);
+  transform: scale(1.05);
+}
+
+/* 动画 */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* 自定义滚动条 - Mac 风格 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 选择文本样式 */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: inherit;
+}
+
+/* 🌍 语言选择链接和输入框样式 */
+.language-link {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: inherit;
+  transition: opacity 0.2s ease;
+  user-select: none;
+  pointer-events: auto;
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.language-link:hover {
+  opacity: 0.7;
+}
+
+.language-input-container {
+  display: inline-block;
+  position: relative;
+}
+
+.language-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #333;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+  width: 100px;
+  margin: 0 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.language-input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.8);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  background: rgba(255, 255, 255, 1);
+}
+
+.language-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-style: italic;
+}
