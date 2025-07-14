@@ -16,6 +16,7 @@ import icon from '../../resources/icon.png?asset'
 // 全局变量
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
+let isQuitting = false // 标记应用是否正在退出
 
 function createWindow(): void {
   // Create the browser window with super floating configuration
@@ -70,17 +71,14 @@ function createWindow(): void {
     mainWindow?.setAlwaysOnTop(true, 'floating')
   })
 
-  // 修改窗口关闭行为：关闭时隐藏到托盘，而不是退出应用
+  // 修改窗口关闭行为：区分手动关闭和系统退出
   mainWindow.on('close', (event) => {
-    if (process.platform === 'darwin') {
-      // macOS：隐藏窗口到托盘
-      event.preventDefault()
-      mainWindow?.hide()
-    } else {
-      // Windows/Linux：最小化到托盘
+    if (!isQuitting) {
+      // 用户手动关闭窗口（点击X）→ 隐藏到托盘
       event.preventDefault()
       mainWindow?.hide()
     }
+    // 如果 isQuitting = true（Cmd+Q），不调用 preventDefault()，让应用正常退出
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -427,6 +425,9 @@ app.on('window-all-closed', () => {
 
 // 确保托盘图标和全局快捷键在应用退出时被清理
 app.on('before-quit', () => {
+  // 标记应用正在退出
+  isQuitting = true
+
   // 清理托盘图标
   if (tray) {
     tray.destroy()
