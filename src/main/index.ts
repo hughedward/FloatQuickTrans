@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Tray, Menu, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -90,11 +90,32 @@ function createWindow(): void {
 // 创建系统托盘
 function createTray(): void {
   try {
-    // 托盘图标路径
-    const trayIconPath = join(__dirname, '../../build/tray-icon.png')
+    // 托盘图标路径 - 兼容开发和构建环境
+    let trayIconPath: string
+    if (is.dev) {
+      // 开发模式：从项目根目录获取
+      trayIconPath = join(process.cwd(), 'build/tray-icon.png')
+    } else {
+      // 构建模式：使用相对路径
+      trayIconPath = join(__dirname, '../../build/tray-icon.png')
+    }
+
+    console.log('🔍 托盘图标路径:', trayIconPath)
+
+    // 创建托盘图标（macOS模板图标）
+    let trayIcon = nativeImage.createFromPath(trayIconPath)
+
+    // 确保图标尺寸适合托盘显示（16x16为标准）
+    if (trayIcon.getSize().width > 16 || trayIcon.getSize().height > 16) {
+      trayIcon = trayIcon.resize({ width: 16, height: 16 })
+    }
+
+    if (process.platform === 'darwin') {
+      trayIcon.setTemplateImage(true) // 在macOS上设置为模板图标
+    }
 
     // 创建托盘实例
-    tray = new Tray(trayIconPath)
+    tray = new Tray(trayIcon)
 
     // 设置托盘提示文本
     tray.setToolTip('FloatQuickTrans - 单击：显示/隐藏窗口，右键：菜单')

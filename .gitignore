@@ -6,3 +6,4 @@ out
 *.log*
 .doc
 build/
+create-tray-icon.html

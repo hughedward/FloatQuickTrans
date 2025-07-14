@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <title>简单托盘图标</title>
+  </head>
+  <body>
+    <canvas
+      id="canvas"
+      width="20"
+      height="20"
+      style="width: 200px; height: 200px; image-rendering: pixelated; border: 1px solid #ccc"
+    ></canvas>
+    <br /><br />
+    <button onclick="downloadIcon()">下载简单图标</button>
+
+    <script>
+      const canvas = document.getElementById('canvas')
+      const ctx = canvas.getContext('2d')
+
+      // 清除画布，设置透明背景
+      ctx.clearRect(0, 0, 20, 20)
+
+      // 设置黑色填充
+      ctx.fillStyle = '#000000'
+      ctx.strokeStyle = '#000000'
+      ctx.lineWidth = 2
+
+      // 绘制简单的T字形图标（代表Translation）
+      ctx.beginPath()
+
+      // 水平线（T的上横）
+      ctx.moveTo(4, 6)
+      ctx.lineTo(16, 6)
+
+      // 垂直线（T的竖）
+      ctx.moveTo(10, 6)
+      ctx.lineTo(10, 16)
+
+      ctx.stroke()
+
+      // 添加一个小装饰点
+      ctx.beginPath()
+      ctx.arc(10, 4, 1, 0, 2 * Math.PI)
+      ctx.fill()
+
+      function downloadIcon() {
+        const link = document.createElement('a')
+        link.download = 'tray-icon-simple.png'
+        link.href = canvas.toDataURL('image/png')
+        link.click()
+      }
+
+      console.log('简单T字托盘图标已生成！')
+    </script>
+  </body>
+</html>
