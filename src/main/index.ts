@@ -12,7 +12,7 @@ import { join } from 'path'
 import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-
+import '../model/proxy'
 // 全局变量
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null

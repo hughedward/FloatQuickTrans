@@ -1,5 +1,6 @@
 // src/model/gemini/index.ts
-import { GoogleGenerativeAI } from '@google/generative-ai'
+// 不再 import getProxyAgent
+// import { getProxyAgent } from '../proxy'
 import { StreamCallback, ModelInfo } from '../aiApi'
 
 // 🎯 Gemini翻译配置
@@ -12,29 +13,25 @@ const GEMINI_CONFIG = {
   }
 }
 
+const GEMINI_API_URL =
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse'
+
 // 🤖 Gemini翻译API类
 export class GeminiTranslator {
-  private genAI: GoogleGenerativeAI
-  private model: any
+  private apiKey: string
 
   constructor(apiKey?: string) {
-    const effectiveApiKey = apiKey || GEMINI_CONFIG.apiKey
-
-    this.genAI = new GoogleGenerativeAI(effectiveApiKey)
-    this.model = this.genAI.getGenerativeModel({
-      model: GEMINI_CONFIG.model,
-      generationConfig: GEMINI_CONFIG.generationConfig
-    })
+    this.apiKey = apiKey || GEMINI_CONFIG.apiKey
   }
 
   // 🔍 验证API Key是否有效
   private validateApiKey(): void {
-    if (!this.genAI || !this.genAI.apiKey || this.genAI.apiKey.trim() === '') {
+    if (!this.apiKey || this.apiKey.trim() === '') {
       throw new Error('Gemini API key is required. Please configure it in Settings.')
     }
   }
 
-  // 🌊 流式翻译方法
+  // 🌊 流式翻译方法（fetch+SSE）
   async translateStream(
     text: string,
     targetLang: string = 'Chinese',
@@ -42,33 +39,66 @@ export class GeminiTranslator {
   ): Promise<void> {
     try {
       this.validateApiKey() // 🔑 验证API Key
-
       console.log('🚀 Starting Gemini streaming translation:', {
         text: text.substring(0, 50) + '...',
         targetLang
       })
 
       // 构建翻译提示词
-      const translatePrompt = this.buildTranslatePrompt(text, targetLang)
+      const prompt = this.buildTranslatePrompt(text, targetLang)
 
-      // 使用generateContentStream进行流式生成
-      const result = await this.model.generateContentStream(translatePrompt)
+      // 构建请求体
+      const body = JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: GEMINI_CONFIG.generationConfig
+        // model: GEMINI_CONFIG.model // 可选
+      })
 
+      // fetch + SSE 解析
+      const res = await fetch(GEMINI_API_URL + `&key=${this.apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body
+      })
+      if (!res.ok) throw new Error(`Gemini API error: ${res.status} ${res.statusText}`)
+
+      // 解析 SSE 流
+      const reader = res.body?.getReader()
       let accumulatedText = ''
-
-      // 🌊 处理流式响应
-      for await (const chunk of result.stream) {
-        const chunkText = chunk.text()
-
-        if (chunkText) {
-          accumulatedText += chunkText
-          console.log('📝 Received streaming content:', chunkText)
-          onStream(chunkText, false) // 实时回调每个chunk
+      let done = false
+      let buffer = ''
+      const decoder = new TextDecoder('utf-8')
+      while (!done && reader) {
+        const { value, done: doneReading } = await reader.read()
+        done = doneReading
+        if (value) {
+          buffer += decoder.decode(value)
+          let lines = buffer.split('\n')
+          buffer = lines.pop() || ''
+          for (const line of lines) {
+            if (line.startsWith('data:')) {
+              const data = line.slice(5).trim()
+              if (data === '[DONE]') {
+                onStream('', true)
+                return
+              }
+              try {
+                const parsed = JSON.parse(data)
+                const chunkText = parsed.candidates?.[0]?.content?.parts?.[0]?.text || ''
+                if (chunkText) {
+                  accumulatedText += chunkText
+                  onStream(chunkText, false)
+                }
+              } catch (e) {
+                // 忽略解析错误
+              }
+            }
+          }
         }
       }
-
-      console.log('✅ Gemini translation completed:', accumulatedText)
-      onStream('', true) // 标记完成
+      onStream('', true)
     } catch (error) {
       console.error('❌ Gemini translation failed:', error)
       const errorMessage = this.formatError(error)
@@ -77,22 +107,30 @@ export class GeminiTranslator {
     }
   }
 
-  // 🔄 非流式翻译方法（作为备选）
+  // 🔄 非流式翻译方法（fetch）
   async translate(text: string, targetLang: string = 'Chinese'): Promise<string> {
     try {
       this.validateApiKey() // 🔑 验证API Key
-
       console.log('🚀 Starting Gemini translation:', {
         text: text.substring(0, 50) + '...',
         targetLang
       })
-
-      const translatePrompt = this.buildTranslatePrompt(text, targetLang)
-
-      const result = await this.model.generateContent(translatePrompt)
-      const response = await result.response
-      const translatedText = response.text()
-
+      const prompt = this.buildTranslatePrompt(text, targetLang)
+      const body = JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: GEMINI_CONFIG.generationConfig
+      })
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body
+      })
+      if (!res.ok) throw new Error(`Gemini API error: ${res.status} ${res.statusText}`)
+      const json = await res.json()
+      const translatedText = json.candidates?.[0]?.content?.parts?.[0]?.text || ''
       console.log('✅ Gemini translation completed:', translatedText)
       return translatedText
     } catch (error) {
@@ -105,15 +143,29 @@ export class GeminiTranslator {
   async testConnection(): Promise<boolean> {
     try {
       this.validateApiKey() // 🔑 验证API Key
-
       console.log('🔍 Testing Gemini connection...')
-
-      const result = await this.model.generateContent(
-        'Hello, please reply with exactly "Connection successful" in English.'
-      )
-      const response = await result.response
-      const text = response.text()
-
+      const body = JSON.stringify({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: 'Hello, please reply with exactly "Connection successful" in English.' }
+            ]
+          }
+        ],
+        generationConfig: GEMINI_CONFIG.generationConfig
+      })
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body
+      })
+      if (!res.ok) return false
+      const json = await res.json()
+      const text = json.candidates?.[0]?.content?.parts?.[0]?.text || ''
       const isSuccessful = text.includes('successful') || text.includes('Connection successful')
       console.log(
         isSuccessful ? '✅ Gemini connection successful' : '⚠️ Gemini connection abnormal'

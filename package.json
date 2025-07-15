@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@google/generative-ai": "^0.24.1",
     "lucide-react": "^0.525.0",
+    "node-fetch": "^3.3.2",
     "openai": "^5.8.4"
   },
   "devDependencies": {
