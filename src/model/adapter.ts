@@ -14,6 +14,7 @@ import {
 } from './aiApi'
 
 import { DeepSeekTranslator } from './openai/index'
+import { GeminiTranslator } from './gemini/index'
 
 // 🎯 翻译器工厂类
 export class TranslatorFactory {
@@ -33,8 +34,8 @@ export class TranslatorFactory {
           // TODO: Implement Claude translator
           throw new Error('Claude translator not implemented yet')
         case AIProvider.GEMINI:
-          // TODO: Implement Gemini translator
-          throw new Error('Gemini translator not implemented yet')
+          this.instances.set(provider, new GeminiTranslatorAdapter(apiKey))
+          break
         default:
           throw new Error(`Unsupported AI provider: ${provider}`)
       }
@@ -50,7 +51,7 @@ export class TranslatorFactory {
 
   // 📋 Get supported providers list
   static getSupportedProviders(): AIProvider[] {
-    return [AIProvider.DEEPSEEK] // Currently only supports DeepSeek
+    return [AIProvider.DEEPSEEK, AIProvider.GEMINI] // Currently only Gemini adapter is fully implemented
   }
 }
 
@@ -90,6 +91,55 @@ class DeepSeekTranslatorAdapter implements AITranslator {
       return await this.translator.testConnection()
     } catch (error) {
       console.error('DeepSeek connection test failed:', error)
+      return false
+    }
+  }
+
+  getModelInfo(): ModelInfo {
+    return this.translator.getModelInfo()
+  }
+
+  getSupportedLanguages(): string[] {
+    return SUPPORTED_LANGUAGES
+  }
+}
+
+// 🤖 Gemini翻译器适配器
+class GeminiTranslatorAdapter implements AITranslator {
+  private translator: GeminiTranslator
+
+  constructor(apiKey?: string) {
+    this.translator = new GeminiTranslator(apiKey)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async translateStream(
+    text: string,
+    targetLang: string,
+    onStream: StreamCallback,
+    config?: TranslationConfig // TODO: Implement config parameter passing
+  ): Promise<void> {
+    try {
+      await this.translator.translateStream(text, targetLang, onStream)
+    } catch (error) {
+      throw TranslationError.formatError(error, AIProvider.GEMINI)
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async translate(text: string, targetLang: string, config?: TranslationConfig): Promise<string> {
+    try {
+      return await this.translator.translate(text, targetLang)
+    } catch (error) {
+      throw TranslationError.formatError(error, AIProvider.GEMINI)
+    }
+  }
+
+  async testConnection(): Promise<boolean> {
+    try {
+      return await this.translator.testConnection()
+    } catch (error) {
+      console.error('Gemini connection test failed:', error)
       return false
     }
   }

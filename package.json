@@ -23,6 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@google/generative-ai": "^0.24.1",
     "lucide-react": "^0.525.0",
     "openai": "^5.8.4"
   },
