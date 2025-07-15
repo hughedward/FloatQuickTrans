@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import './SettingsDialog.css'
+import { useProvider } from '../context/ProviderContext'
 
 interface SettingsDialogProps {
   isOpen: boolean
@@ -17,9 +18,7 @@ interface ModelConfig {
 }
 
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
-  const [currentProvider, setCurrentProvider] = useState<
-    'openai' | 'deepseek' | 'gemini' | 'claude'
-  >('deepseek')
+  const { currentProvider, setCurrentProvider } = useProvider()
   const [models, setModels] = useState<ModelConfig[]>([
     {
       name: 'DeepSeek',
@@ -197,12 +196,12 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
   }
 
   // 处理提供商选择变化
-  const handleProviderChange = (provider: 'openai' | 'deepseek' | 'gemini' | 'claude'): void => {
-    setCurrentProvider(provider)
-    // 保存到localStorage，让App.tsx能读取
-    localStorage.setItem('quick-trans-current-provider', provider)
-    console.log('✅ Current provider saved:', provider)
-  }
+  // const handleProviderChange = (provider: 'openai' | 'deepseek' | 'gemini' | 'claude'): void => {
+  //   setCurrentProvider(provider)
+  //   // 保存到localStorage，让App.tsx能读取
+  //   localStorage.setItem('quick-trans-current-provider', provider)
+  //   console.log('✅ Current provider saved:', provider)
+  // }
 
   const handleTestAll = async (): Promise<void> => {
     setIsTestingAll(true)
@@ -242,9 +241,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             <label>Current Model:</label>
             <select
               value={currentProvider}
-              onChange={(e) =>
-                handleProviderChange(e.target.value as 'openai' | 'deepseek' | 'gemini' | 'claude')
-              }
+              onChange={(e) => setCurrentProvider(e.target.value as any)}
               className="provider-select"
             >
               <option value="deepseek">DeepSeek</option>

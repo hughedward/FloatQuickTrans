@@ -4,6 +4,7 @@ import { translateWithDeepSeek, testDeepSeekConnection } from '../../model/opena
 import { TranslationManager } from '../../model/adapter'
 import { AIProvider } from '../../model/aiApi'
 import SettingsDialog from './components/SettingsDialog'
+import { ProviderContextProvider, useProvider } from './context/ProviderContext'
 // import { validateLanguage, getLanguageDisplayName } from '../../model/languages'
 
 // 🧪 Mock翻译功能 - 用于演示
@@ -95,19 +96,15 @@ function App(): React.JSX.Element {
   >('unknown')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-  // 🤖 AI提供商选择状态（阶段2：测试适配器）
-  const [currentProvider, setCurrentProvider] = useState<AIProvider>(() => {
-    // 从localStorage加载保存的提供商设置，默认DeepSeek
-    const saved = localStorage.getItem('quick-trans-current-provider')
-    return (saved as AIProvider) || AIProvider.DEEPSEEK
-  })
+  // 替换原有currentProvider逻辑
+  const { currentProvider } = useProvider()
 
   // 监听Settings中的提供商选择变化
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'quick-trans-current-provider' && e.newValue) {
         console.log('🔄 Provider changed from Settings:', e.newValue)
-        setCurrentProvider(e.newValue as AIProvider)
+        // setCurrentProvider(e.newValue as AIProvider) // This line is removed as per the new_code
       }
     }
 
@@ -262,6 +259,7 @@ function App(): React.JSX.Element {
     try {
       const apiKey = getApiKey(currentProvider)
       console.log(`🔑 ${currentProvider} API Key:-------->', ${apiKey ? 'configured' : 'missing'}`)
+      console.log(`🔑 ${currentProvider} API Key:-------->', ${apiKey}`)
 
       if (apiKey && apiKey.trim() !== '') {
         console.log(`🔑 Using real API with streaming translation via ${currentProvider}`)
@@ -650,4 +648,13 @@ function App(): React.JSX.Element {
   )
 }
 
-export default App
+// 用ProviderContextProvider包裹App
+function AppRoot() {
+  return (
+    <ProviderContextProvider>
+      <App />
+    </ProviderContextProvider>
+  )
+}
+
+export default AppRoot
