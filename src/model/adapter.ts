@@ -13,7 +13,7 @@ import {
   DEFAULT_TRANSLATION_CONFIG
 } from './aiApi'
 
-import { DeepSeekTranslator } from './openai/index'
+import { DeepSeekTranslator } from './deepseek/index'
 import { GeminiTranslator } from './gemini/index'
 
 // 🎯 翻译器工厂类

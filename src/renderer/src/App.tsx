@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
-import { translateWithDeepSeek, testDeepSeekConnection } from '../../model/openai/index'
+import { translateWithDeepSeek, testDeepSeekConnection } from '../../model/deepseek/index'
 import { TranslationManager } from '../../model/adapter'
 import { AIProvider } from '../../model/aiApi'
 import SettingsDialog from './components/SettingsDialog'
