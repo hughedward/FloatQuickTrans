@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
 import { translateWithDeepSeek, testDeepSeekConnection } from '../../model/openai/index'
+import { TranslationManager } from '../../model/adapter'
+import { AIProvider } from '../../model/aiApi'
 import SettingsDialog from './components/SettingsDialog'
 // import { validateLanguage, getLanguageDisplayName } from '../../model/languages'
 
@@ -93,6 +95,26 @@ function App(): React.JSX.Element {
   >('unknown')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
+  // 🤖 AI提供商选择状态（阶段2：测试适配器）
+  const [currentProvider, setCurrentProvider] = useState<AIProvider>(() => {
+    // 从localStorage加载保存的提供商设置，默认DeepSeek
+    const saved = localStorage.getItem('quick-trans-current-provider')
+    return (saved as AIProvider) || AIProvider.DEEPSEEK
+  })
+
+  // 监听Settings中的提供商选择变化
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'quick-trans-current-provider' && e.newValue) {
+        console.log('🔄 Provider changed from Settings:', e.newValue)
+        setCurrentProvider(e.newValue as AIProvider)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
   // 🌍 语言选择状态
   const [targetLanguage, setTargetLanguage] = useState(() => {
     // 从localStorage加载保存的语言设置
@@ -114,9 +136,10 @@ function App(): React.JSX.Element {
     console.log('🔍 ==> localStorage检查结束')
   }
 
-  // 🔑 获取API Key配置
-  const getApiKey = (): string | null => {
-    console.log('🔍 Starting getApiKey()...')
+  // 🔑 获取API Key配置（通用版本，支持不同提供商）
+  const getApiKey = (provider?: AIProvider): string | null => {
+    const targetProvider = provider || currentProvider
+    console.log(`🔍 Starting getApiKey() for provider: ${targetProvider}...`)
     debugLocalStorage() // 先查看localStorage所有内容
 
     try {
@@ -125,11 +148,11 @@ function App(): React.JSX.Element {
       if (settings) {
         const parsed = JSON.parse(settings)
         console.log('🔍 Parsed data:', parsed)
-        const deepseekConfig = parsed.find(
-          (config: { provider: string; apiKey?: string }) => config.provider === 'deepseek'
+        const providerConfig = parsed.find(
+          (config: { provider: string; apiKey?: string }) => config.provider === targetProvider
         )
-        console.log('🔍 DeepSeek config:', deepseekConfig)
-        return deepseekConfig?.apiKey || null
+        console.log(`🔍 ${targetProvider} config:`, providerConfig)
+        return providerConfig?.apiKey || null
       } else {
         // 🔧 如果localStorage为空，提示用户配置
         console.log('⚠️ No API settings found in localStorage')
@@ -226,25 +249,56 @@ function App(): React.JSX.Element {
     }
   }, [inputText, translatedText])
 
-  // 🌊 真正的 DeepSeek 流式翻译
+  // 🌊 通用流式翻译（支持适配器模式）
   const translate = async (text: string): Promise<void> => {
     if (!text.trim()) return
 
-    console.log(`🌊 Starting streaming translation to ${targetLanguage}...`)
+    console.log(
+      `🌊 Starting streaming translation to ${targetLanguage} using ${currentProvider}...`
+    )
     setIsLoading(true)
     setTranslatedText('') // 清空之前的结果
 
     try {
-      const apiKey = getApiKey()
-      console.log('🔑 API Key:-------->', apiKey)
+      const apiKey = getApiKey(currentProvider)
+      console.log(`🔑 ${currentProvider} API Key:-------->', ${apiKey ? 'configured' : 'missing'}`)
 
       if (apiKey && apiKey.trim() !== '') {
-        console.log('🔑 Using real API with streaming translation')
+        console.log(`🔑 Using real API with streaming translation via ${currentProvider}`)
 
-        // 🌊 使用流式翻译
-        await translateWithDeepSeek(
-          text,
-          (chunk: string, isComplete: boolean) => {
+        // 🎯 根据当前提供商选择翻译方式
+        if (currentProvider === AIProvider.DEEPSEEK) {
+          // 🔄 保持DeepSeek原有直接调用方式（阶段3再迁移）
+          await translateWithDeepSeek(
+            text,
+            (chunk: string, isComplete: boolean) => {
+              if (chunk && !isComplete) {
+                // 流式追加文本
+                setTranslatedText((prev) => prev + chunk)
+
+                // 🎯 每次更新都同步窗口高度
+                setTimeout(() => {
+                  syncWindowWithContent()
+                }, 50)
+              }
+
+              if (isComplete) {
+                console.log('✅ DeepSeek streaming translation completed')
+                // 🎯 翻译完成后最终同步窗口高度
+                setTimeout(() => {
+                  syncWindowWithContent()
+                }, 100)
+              }
+            },
+            targetLanguage,
+            apiKey // 🔑 传递API Key
+          )
+        } else {
+          // 🚀 使用适配器模式（Gemini等新提供商）
+          console.log(`🚀 Using adapter mode for ${currentProvider}`)
+          const manager = new TranslationManager(currentProvider, apiKey)
+
+          await manager.translateTo(text, targetLanguage, (chunk: string, isComplete: boolean) => {
             if (chunk && !isComplete) {
               // 流式追加文本
               setTranslatedText((prev) => prev + chunk)
@@ -256,16 +310,14 @@ function App(): React.JSX.Element {
             }
 
             if (isComplete) {
-              console.log('✅ Streaming translation completed')
+              console.log(`✅ ${currentProvider} streaming translation completed`)
               // 🎯 翻译完成后最终同步窗口高度
               setTimeout(() => {
                 syncWindowWithContent()
               }, 100)
             }
-          },
-          targetLanguage,
-          apiKey // 🔑 传递API Key
-        )
+          })
+        }
       } else {
         console.log('🧪 Using Mock translation with typing effect')
         // Mock翻译也模拟流式效果
@@ -483,6 +535,17 @@ function App(): React.JSX.Element {
 
       {/* 输入区域 */}
       <div className="input-section">
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+          <span
+            style={{
+              fontSize: '10px',
+              color: 'rgba(255, 255, 255, 0.6)',
+              marginRight: 'auto'
+            }}
+          >
+            Using: {currentProvider.toUpperCase()}
+          </span>
+        </div>
         <textarea
           ref={inputRef}
           value={inputText}
@@ -497,7 +560,7 @@ function App(): React.JSX.Element {
       <div className="result-section">
         <div className="result-box">
           {isLoading && !translatedText ? (
-            <p className="loading-text">🌊 DeepSeek Translating...</p>
+            <p className="loading-text">🌊 {currentProvider.toUpperCase()} Translating...</p>
           ) : translatedText ? (
             <p className="result-text">{translatedText}</p>
           ) : (

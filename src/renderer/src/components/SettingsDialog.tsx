@@ -63,6 +63,17 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
 
   // 加载保存的设置
   useEffect(() => {
+    // 从localStorage加载当前提供商设置
+    try {
+      const savedProvider = localStorage.getItem('quick-trans-current-provider')
+      if (savedProvider) {
+        setCurrentProvider(savedProvider as 'openai' | 'deepseek' | 'gemini' | 'claude')
+        console.log('✅ Loaded current provider:', savedProvider)
+      }
+    } catch (error) {
+      console.warn('Failed to load current provider:', error)
+    }
+
     // 从localStorage加载API key设置
     try {
       const savedSettings = localStorage.getItem('quick-trans-api-settings')
@@ -185,6 +196,14 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     setShowApiKey((prev) => ({ ...prev, [provider]: !prev[provider] }))
   }
 
+  // 处理提供商选择变化
+  const handleProviderChange = (provider: 'openai' | 'deepseek' | 'gemini' | 'claude'): void => {
+    setCurrentProvider(provider)
+    // 保存到localStorage，让App.tsx能读取
+    localStorage.setItem('quick-trans-current-provider', provider)
+    console.log('✅ Current provider saved:', provider)
+  }
+
   const handleTestAll = async (): Promise<void> => {
     setIsTestingAll(true)
     setActionFeedback('Testing all connections...')
@@ -224,7 +243,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             <select
               value={currentProvider}
               onChange={(e) =>
-                setCurrentProvider(e.target.value as 'openai' | 'deepseek' | 'gemini' | 'claude')
+                handleProviderChange(e.target.value as 'openai' | 'deepseek' | 'gemini' | 'claude')
               }
               className="provider-select"
             >
