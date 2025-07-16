@@ -663,8 +663,8 @@ function App(): React.JSX.Element {
         </div>
       </div>
       {/* 结果显示 */}
-      <div className="result-section">
-        <div className="result-box" style={{ position: 'relative' }}>
+      <div className="result-section" style={{ position: 'relative' }}>
+        <div className="result-box">
           {isLoading && !translatedText ? (
             <p className="loading-text">🌊 {currentProvider.toUpperCase()} Translating...</p>
           ) : translatedText ? (
@@ -672,17 +672,17 @@ function App(): React.JSX.Element {
           ) : (
             <p className="result-placeholder">Translation result will appear here</p>
           )}
-          <button
-            className={`speak-icon ${isOutputSpeaking ? 'speaking' : ''} ${!translatedText.trim() ? 'disabled' : ''}`}
-            onClick={handleSpeakOutput}
-            disabled={!translatedText.trim()}
-            title={isOutputSpeaking ? '停止朗读' : '朗读翻译结果'}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M8.5 2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m-2 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-6 1.5A.5.5 0 0 1 5 6v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m8 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m-10 1A.5.5 0 0 1 3 7v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5m12 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5"/>
-            </svg>
-          </button>
         </div>
+        <button
+          className={`speak-icon-output ${isOutputSpeaking ? 'speaking' : ''} ${!translatedText.trim() ? 'disabled' : ''}`}
+          onClick={handleSpeakOutput}
+          disabled={!translatedText.trim()}
+          title={isOutputSpeaking ? '停止朗读' : '朗读翻译结果'}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M8.5 2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m-2 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-6 1.5A.5.5 0 0 1 5 6v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m8 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m-10 1A.5.5 0 0 1 3 7v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5m12 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5"/>
+          </svg>
+        </button>
       </div>
 
       {/* 使用说明 */}
