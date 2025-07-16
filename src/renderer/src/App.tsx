@@ -6,6 +6,53 @@ import SettingsDialog from './components/SettingsDialog'
 import { ProviderContextProvider, useProvider } from './context/ProviderContext'
 // import { validateLanguage, getLanguageDisplayName } from '../../model/languages'
 
+// 🔊 朗读功能
+const languageMap: Record<string, string> = {
+  'Chinese': 'zh-CN',
+  'English': 'en-US',
+  'Japanese': 'ja-JP',
+  'French': 'fr-FR',
+  'German': 'de-DE',
+  'Spanish': 'es-ES',
+  'Korean': 'ko-KR',
+  'Russian': 'ru-RU'
+}
+
+// 朗读文本函数
+const speakText = (text: string, language: string = 'en-US'): void => {
+  if (!text.trim()) return
+  
+  // 停止当前朗读
+  speechSynthesis.cancel()
+  
+  const utterance = new SpeechSynthesisUtterance(text)
+  utterance.lang = language
+  utterance.rate = 0.9 // 稍慢一点
+  utterance.volume = 0.8
+  
+  console.log(`🔊 开始朗读: "${text.substring(0, 50)}..." (${language})`)
+  
+  speechSynthesis.speak(utterance)
+}
+
+// 检测文本语言（简单版本）
+const detectLanguage = (text: string): string => {
+  if (!text.trim()) return 'en-US'
+  
+  // 简单的中文检测
+  if (/[\u4e00-\u9fff]/.test(text)) {
+    return 'zh-CN'
+  }
+  
+  // 简单的日文检测
+  if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) {
+    return 'ja-JP'
+  }
+  
+  // 默认英文
+  return 'en-US'
+}
+
 // 🧪 Mock翻译功能 - 用于演示
 const mockTranslateText = async (text: string, targetLang: string): Promise<string> => {
   // 模拟API延迟
@@ -83,6 +130,10 @@ function App(): React.JSX.Element {
   const [inputText, setInputText] = useState('')
   const [translatedText, setTranslatedText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  
+  // 🔊 朗读状态
+  const [isInputSpeaking, setIsInputSpeaking] = useState(false)
+  const [isOutputSpeaking, setIsOutputSpeaking] = useState(false)
 
   // 🔧 组件加载时输出日志
   useEffect(() => {
@@ -199,6 +250,80 @@ function App(): React.JSX.Element {
       console.error('🚨 Window sync failed:', error)
       // 出错时恢复到安全高度
       window.api.resizeWindowHeight(196, 300)
+    }
+  }
+
+  // 🔊 朗读输入文本
+  const handleSpeakInput = (): void => {
+    if (!inputText.trim()) {
+      console.warn('⚠️ 输入文本为空，无法朗读')
+      return
+    }
+    
+    if (isInputSpeaking) {
+      // 正在朗读，点击停止
+      speechSynthesis.cancel()
+      setIsInputSpeaking(false)
+      console.log('🔇 停止朗读输入文本')
+    } else {
+      // 开始朗读
+      const language = detectLanguage(inputText)
+      setIsInputSpeaking(true)
+      
+      const utterance = new SpeechSynthesisUtterance(inputText)
+      utterance.lang = language
+      utterance.rate = 0.9
+      utterance.volume = 0.8
+      
+      utterance.onend = () => {
+        setIsInputSpeaking(false)
+        console.log('✅ 输入文本朗读完成')
+      }
+      
+      utterance.onerror = () => {
+        setIsInputSpeaking(false)
+        console.error('❌ 输入文本朗读失败')
+      }
+      
+      speechSynthesis.speak(utterance)
+      console.log(`🔊 开始朗读输入文本 (${language})`)
+    }
+  }
+  
+  // 🔊 朗读输出文本
+  const handleSpeakOutput = (): void => {
+    if (!translatedText.trim()) {
+      console.warn('⚠️ 翻译结果为空，无法朗读')
+      return
+    }
+    
+    if (isOutputSpeaking) {
+      // 正在朗读，点击停止
+      speechSynthesis.cancel()
+      setIsOutputSpeaking(false)
+      console.log('🔇 停止朗读翻译结果')
+    } else {
+      // 开始朗读
+      const language = languageMap[targetLanguage] || 'en-US'
+      setIsOutputSpeaking(true)
+      
+      const utterance = new SpeechSynthesisUtterance(translatedText)
+      utterance.lang = language
+      utterance.rate = 0.9
+      utterance.volume = 0.8
+      
+      utterance.onend = () => {
+        setIsOutputSpeaking(false)
+        console.log('✅ 翻译结果朗读完成')
+      }
+      
+      utterance.onerror = () => {
+        setIsOutputSpeaking(false)
+        console.error('❌ 翻译结果朗读失败')
+      }
+      
+      speechSynthesis.speak(utterance)
+      console.log(`🔊 开始朗读翻译结果 (${language})`)
     }
   }
 
@@ -515,19 +640,31 @@ function App(): React.JSX.Element {
             Using: {currentProvider.toUpperCase()}
           </span>
         </div>
-        <textarea
-          ref={inputRef}
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="Enter the text to translate..."
-          className="input-textarea focus-ring"
-          disabled={isLoading}
-          rows={4}
-        />
+        <div style={{ position: 'relative' }}>
+          <textarea
+            ref={inputRef}
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Enter the text to translate..."
+            className="input-textarea focus-ring"
+            disabled={isLoading}
+            rows={4}
+          />
+          <button
+            className={`speak-icon ${isInputSpeaking ? 'speaking' : ''} ${!inputText.trim() ? 'disabled' : ''}`}
+            onClick={handleSpeakInput}
+            disabled={!inputText.trim()}
+            title={isInputSpeaking ? '停止朗读' : '朗读输入文本'}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path fillRule="evenodd" d="M8.5 2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m-2 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-6 1.5A.5.5 0 0 1 5 6v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m8 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m-10 1A.5.5 0 0 1 3 7v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5m12 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5"/>
+            </svg>
+          </button>
+        </div>
       </div>
       {/* 结果显示 */}
       <div className="result-section">
-        <div className="result-box">
+        <div className="result-box" style={{ position: 'relative' }}>
           {isLoading && !translatedText ? (
             <p className="loading-text">🌊 {currentProvider.toUpperCase()} Translating...</p>
           ) : translatedText ? (
@@ -535,6 +672,16 @@ function App(): React.JSX.Element {
           ) : (
             <p className="result-placeholder">Translation result will appear here</p>
           )}
+          <button
+            className={`speak-icon ${isOutputSpeaking ? 'speaking' : ''} ${!translatedText.trim() ? 'disabled' : ''}`}
+            onClick={handleSpeakOutput}
+            disabled={!translatedText.trim()}
+            title={isOutputSpeaking ? '停止朗读' : '朗读翻译结果'}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path fillRule="evenodd" d="M8.5 2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m-2 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-6 1.5A.5.5 0 0 1 5 6v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m8 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m-10 1A.5.5 0 0 1 3 7v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5m12 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5"/>
+            </svg>
+          </button>
         </div>
       </div>
 

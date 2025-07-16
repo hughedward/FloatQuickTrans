@@ -439,6 +439,53 @@ body {
   transform: scale(1.05);
 }
 
+/* 🔊 朗读图标样式 */
+.speak-icon {
+  position: absolute;
+  bottom: 4px;
+  left: 1px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: #6b7280; /* 默认灰色 */
+  z-index: 10;
+  -webkit-app-region: no-drag;
+}
+
+.speak-icon:hover:not(.disabled) {
+  color: #3b82f6; /* 悬停蓝色 */
+  transform: scale(1.1);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.speak-icon.speaking {
+  color: #3b82f6; /* 播放蓝色 */
+  animation: speakPulse 1.5s infinite;
+}
+
+.speak-icon.disabled {
+  color: #d1d5db; /* 禁用浅灰 */
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@keyframes speakPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
 /* 动画 */
 @keyframes slideDown {
   from {
