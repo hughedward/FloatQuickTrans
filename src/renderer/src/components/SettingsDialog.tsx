@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import './SettingsDialog.css'
 import { useProvider } from '../context/ProviderContext'
 import { AIProvider } from '../../../model/aiApi'
+import { testAIConnection } from '../../../model/adapter'
 
 interface SettingsDialogProps {
   isOpen: boolean
@@ -24,7 +25,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     {
       name: 'DeepSeek',
       provider: 'deepseek',
-      apiKey: 'sk-',
+      apiKey: '',
       baseURL: 'https://api.deepseek.com',
       model: 'deepseek-chat',
       status: 'connected'
@@ -171,14 +172,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     )
 
     // 模拟连接测试
-    setTimeout(() => {
+    setTimeout(async () => {
+      const isConnected = await testAIConnection(provider as AIProvider)
+      console.log('🔍 isConnected---->:', isConnected)
       setModels((prev) =>
         prev.map((model) =>
           model.provider === provider
-            ? {
-                ...model,
-                status: model.apiKey ? 'connected' : 'failed'
-              }
+            ? { ...model, status: isConnected ? 'connected' : 'failed' }
             : model
         )
       )
