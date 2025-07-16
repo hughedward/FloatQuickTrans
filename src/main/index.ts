@@ -189,16 +189,16 @@ function createTray(): void {
 
     // 托盘图标单击事件：切换窗口显示/隐藏
     tray.on('click', () => {
-      if (mainWindow?.isVisible()) {
-        hideWindow()
+      if (hasVisibleWindow()) {
+        hideAllWindows()
       } else {
-        showWindow()
+        showAllWindows()
       }
     })
 
     // macOS：双击托盘图标显示窗口
     tray.on('double-click', () => {
-      showWindow()
+      showAllWindows()
     })
 
     console.log('✅ 系统托盘创建成功')
@@ -207,29 +207,37 @@ function createTray(): void {
   }
 }
 
-// 显示窗口
-function showWindow(): void {
-  const firstWindow = windowManager.getFirstWindow()
-  if (firstWindow) {
-    if (firstWindow.isMinimized()) {
-      firstWindow.restore()
+// 显示所有窗口
+function showAllWindows(): void {
+  windowManager.getAllWindows().forEach(window => {
+    if (window.isMinimized()) {
+      window.restore()
     }
-    firstWindow.show()
-    firstWindow.focus()
-
+    window.show()
+    
     // 确保超级悬浮设置
     if (isAlwaysOnTop) {
-      firstWindow.setAlwaysOnTop(true, 'floating')
+      window.setAlwaysOnTop(true, 'floating')
     }
+  })
+  
+  // 聚焦第一个窗口
+  const firstWindow = windowManager.getFirstWindow()
+  if (firstWindow) {
+    firstWindow.focus()
   }
 }
 
-// 隐藏窗口
-function hideWindow(): void {
-  const firstWindow = windowManager.getFirstWindow()
-  if (firstWindow) {
-    firstWindow.hide()
-  }
+// 隐藏所有窗口
+function hideAllWindows(): void {
+  windowManager.getAllWindows().forEach(window => {
+    window.hide()
+  })
+}
+
+// 检查是否有任何窗口可见
+function hasVisibleWindow(): boolean {
+  return windowManager.getAllWindows().some(window => window.isVisible())
 }
 
 // 切换超级悬浮模式
@@ -285,14 +293,15 @@ function registerGlobalShortcuts(): void {
     const registered = globalShortcut.register(toggleShortcut, () => {
       console.log('🎯 全局快捷键触发:', toggleShortcut)
 
-      const firstWindow = windowManager.getFirstWindow()
-      if (firstWindow) {
-        if (firstWindow.isVisible() && firstWindow.isFocused()) {
-          // 窗口可见且获得焦点：隐藏窗口
-          hideWindow()
+      if (windowManager.getWindowCount() > 0) {
+        if (hasVisibleWindow()) {
+          // 有窗口可见：隐藏所有窗口
+          console.log('🔽 隐藏所有窗口')
+          hideAllWindows()
         } else {
-          // 窗口隐藏或失去焦点：显示并聚焦窗口
-          showWindow()
+          // 所有窗口都隐藏：显示所有窗口
+          console.log('🔼 显示所有窗口')
+          showAllWindows()
         }
       }
     })
@@ -323,12 +332,11 @@ function registerGlobalShortcuts(): void {
       const altRegistered = globalShortcut.register(altShortcut, () => {
         console.log('🎯 备用快捷键触发:', altShortcut)
 
-        const firstWindow = windowManager.getFirstWindow()
-        if (firstWindow) {
-          if (firstWindow.isVisible()) {
-            hideWindow()
+        if (windowManager.getWindowCount() > 0) {
+          if (hasVisibleWindow()) {
+            hideAllWindows()
           } else {
-            showWindow()
+            showAllWindows()
           }
         }
       })
