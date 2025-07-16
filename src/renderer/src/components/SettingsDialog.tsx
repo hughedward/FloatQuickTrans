@@ -1,9 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import './SettingsDialog.css'
 import { useProvider } from '../context/ProviderContext'
 import { AIProvider } from '../../../model/aiApi'
 import { testAIConnection } from '../../../model/adapter'
+
+// 🎯 防抖 hook
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
 
 interface SettingsDialogProps {
   isOpen: boolean
@@ -21,6 +38,9 @@ interface ModelConfig {
 
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
   const { currentProvider, setCurrentProvider } = useProvider()
+  
+  // 🎯 优化：分离输入状态和保存状态，减少重渲染
+  const [inputValues, setInputValues] = useState<Record<string, string>>({})
   const [models, setModels] = useState<ModelConfig[]>([
     {
       name: 'DeepSeek',
@@ -28,7 +48,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       apiKey: '',
       baseURL: 'https://api.deepseek.com',
       model: 'deepseek-chat',
-      status: 'unknown' // 🔧 修复：改为unknown，让用户手动测试
+      status: 'unknown'
     },
     {
       name: 'OpenAI',
@@ -61,6 +81,45 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
   const [actionFeedback, setActionFeedback] = useState('')
   const [autoSaveStatus, setAutoSaveStatus] = useState('')
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const testingRef = useRef<Set<string>>(new Set()) // 🎯 跟踪正在测试的提供商
+
+  // 🎯 防抖处理输入值变化
+  const debouncedInputValues = useDebounce(JSON.stringify(inputValues), 1000)
+
+  // 🎯 防抖保存效果
+  useEffect(() => {
+    if (debouncedInputValues && Object.keys(inputValues).length > 0) {
+      const parsedValues = JSON.parse(debouncedInputValues)
+      
+      // 更新 models 状态
+      setModels(prev => prev.map(model => ({
+        ...model,
+        apiKey: parsedValues[model.provider] || model.apiKey
+      })))
+
+      // 保存到 localStorage
+      setAutoSaveStatus('Auto-saving...')
+      
+      try {
+        const savedSettings = localStorage.getItem('quick-trans-api-settings')
+        if (savedSettings) {
+          const parsedSettings = JSON.parse(savedSettings)
+          const updatedSettings = parsedSettings.map((config: any) => ({
+            ...config,
+            apiKey: parsedValues[config.provider] || config.apiKey
+          }))
+          localStorage.setItem('quick-trans-api-settings', JSON.stringify(updatedSettings))
+        }
+        
+        setAutoSaveStatus('Saved')
+        setTimeout(() => setAutoSaveStatus(''), 2000)
+      } catch (error) {
+        console.warn('Failed to save settings:', error)
+        setAutoSaveStatus('Save failed')
+        setTimeout(() => setAutoSaveStatus(''), 2000)
+      }
+    }
+  }, [debouncedInputValues, inputValues])
 
   // 加载保存的设置
   useEffect(() => {
@@ -87,6 +146,14 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings)
         setModels(parsedSettings)
+        
+        // 🎯 初始化输入值状态
+        const initialInputValues: Record<string, string> = {}
+        parsedSettings.forEach((setting: any) => {
+          initialInputValues[setting.provider] = setting.apiKey || ''
+        })
+        setInputValues(initialInputValues)
+        
         console.log('✅ Loaded saved API settings:', parsedSettings)
       } else {
         // 如果没有保存的设置，保存当前的初始设置
@@ -95,10 +162,10 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
           {
             name: 'DeepSeek',
             provider: 'deepseek' as const,
-            apiKey: '', // 🔑 需要用户手动配置
+            apiKey: '',
             baseURL: 'https://api.deepseek.com',
             model: 'deepseek-chat',
-            status: 'unknown' as const // 🔧 修复：统一为unknown
+            status: 'unknown' as const
           },
           {
             name: 'OpenAI',
@@ -121,7 +188,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             provider: 'claude' as const,
             apiKey: '',
             baseURL: 'https://api.anthropic.com',
-            model: 'claude-3-sonnet', // 🔧 修复：保持一致的模型名
+            model: 'claude-3-sonnet',
             status: 'unknown' as const
           }
         ]
@@ -142,38 +209,27 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     }
   }, [])
 
-  if (!isOpen) return null
+  // 🎯 使用 useCallback 优化事件处理函数
+  const handleApiKeyChange = useCallback((provider: string, value: string): void => {
+    setInputValues(prev => ({
+      ...prev,
+      [provider]: value
+    }))
+  }, [])
 
-  const handleApiKeyChange = (provider: string, value: string): void => {
-    const updatedModels = models.map((model) =>
-      model.provider === provider ? { ...model, apiKey: value } : model
-    )
-    setModels(updatedModels)
-
-    // 清除之前的定时器
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current)
-    }
-
-    // 设置新的定时器进行延迟保存
-    setAutoSaveStatus('Auto-saving...')
-    saveTimeoutRef.current = setTimeout(() => {
-      console.log('Auto-saving settings for', provider)
-      // 保存到localStorage
-      localStorage.setItem('quick-trans-api-settings', JSON.stringify(updatedModels))
-      setAutoSaveStatus('Saved')
-      setTimeout(() => setAutoSaveStatus(''), 2000) // 2秒后清除保存状态
-    }, 2000) // 2秒延迟
-  }
-
-  const handleTestConnection = async (provider: string): Promise<void> => {
+  const handleTestConnection = useCallback(async (provider: string): Promise<void> => {
     console.log('🔍 Testing connection for provider:', provider)
     
-    // 🔍 直接从DOM获取当前输入框的值，避免状态同步问题
-    const inputElement = document.querySelector(`input[data-provider="${provider}"]`) as HTMLInputElement
-    const currentApiKey = inputElement?.value || ''
+    // 🎯 防止重复测试
+    if (testingRef.current.has(provider)) {
+      console.log('⚠️ Test already in progress for', provider)
+      return
+    }
     
-    console.log('🔑 Current API key from input:', currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY')
+    // 🔍 获取当前 API key（优先从输入状态获取）
+    const currentApiKey = inputValues[provider] || models.find(m => m.provider === provider)?.apiKey || ''
+    
+    console.log('🔑 Current API key:', currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY')
     
     if (!currentApiKey || currentApiKey.trim() === '') {
       console.warn('⚠️ No API key provided for', provider)
@@ -188,6 +244,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     }
     
     // 🔄 设置测试状态
+    testingRef.current.add(provider)
     setModels((prev) =>
       prev.map((model) => (model.provider === provider ? { ...model, status: 'testing' } : model))
     )
@@ -227,10 +284,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             : model
         )
       )
+    } finally {
+      // 🎯 清除测试状态
+      testingRef.current.delete(provider)
     }
-  }
+  }, [inputValues, models])
 
-  const getStatusText = (status: string): string => {
+  const getStatusText = useCallback((status: string): string => {
     switch (status) {
       case 'connected':
         return 'Connected'
@@ -241,26 +301,21 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       default:
         return 'Unknown'
     }
-  }
+  }, [])
 
-  const toggleApiKeyVisibility = (provider: string): void => {
+  const toggleApiKeyVisibility = useCallback((provider: string): void => {
     setShowApiKey((prev) => ({ ...prev, [provider]: !prev[provider] }))
-  }
+  }, [])
 
-  // 处理提供商选择变化
-  // const handleProviderChange = (provider: 'openai' | 'deepseek' | 'gemini' | 'claude'): void => {
-  //   setCurrentProvider(provider)
-  //   // 保存到localStorage，让App.tsx能读取
-  //   localStorage.setItem('quick-trans-current-provider', provider)
-  //   console.log('✅ Current provider saved:', provider)
-  // }
-
-  const handleTestAll = async (): Promise<void> => {
+  const handleTestAll = useCallback(async (): Promise<void> => {
     setIsTestingAll(true)
     setActionFeedback('Testing all connections...')
 
-    // 🔍 获取有API key的模型
-    const modelsWithApiKey = models.filter((model) => model.apiKey.trim() !== '')
+    // 🔍 获取有API key的模型（从输入状态和模型状态中获取）
+    const modelsWithApiKey = models.filter((model) => {
+      const apiKey = inputValues[model.provider] || model.apiKey
+      return apiKey && apiKey.trim() !== ''
+    })
     
     if (modelsWithApiKey.length === 0) {
       setActionFeedback('No API keys configured')
@@ -272,16 +327,21 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     console.log('🚀 Testing connections for', modelsWithApiKey.length, 'providers')
 
     try {
-      // 🔄 并行测试所有连接
-      const testPromises = modelsWithApiKey.map((model) => 
-        handleTestConnection(model.provider)
-      )
-
-      await Promise.all(testPromises)
+      // 🔄 串行测试连接，避免并发过多导致UI阻塞
+      for (const model of modelsWithApiKey) {
+        if (!testingRef.current.has(model.provider)) {
+          await handleTestConnection(model.provider)
+          // 🎯 添加小延迟，避免请求过于密集
+          await new Promise(resolve => setTimeout(resolve, 200))
+        }
+      }
       
       // 🔍 等待状态更新后计算结果
       setTimeout(() => {
-        const currentModels = models.filter((m) => m.apiKey.trim() !== '')
+        const currentModels = models.filter((m) => {
+          const apiKey = inputValues[m.provider] || m.apiKey
+          return apiKey && apiKey.trim() !== ''
+        })
         const connectedCount = currentModels.filter((m) => m.status === 'connected').length
         const totalCount = currentModels.length
         
@@ -296,7 +356,19 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       setIsTestingAll(false)
       setTimeout(() => setActionFeedback(''), 3000)
     }
-  }
+  }, [models, inputValues, handleTestConnection])
+
+  // 🎯 使用 useMemo 优化渲染的模型数据
+  const displayModels = useMemo(() => {
+    return models.map(model => ({
+      ...model,
+      displayApiKey: inputValues[model.provider] !== undefined 
+        ? inputValues[model.provider] 
+        : model.apiKey
+    }))
+  }, [models, inputValues])
+
+  if (!isOpen) return null
 
   return (
     <div className="settings-overlay" onClick={onClose}>
@@ -327,7 +399,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
 
           {/* 模型配置区域 */}
           <div className="models-container">
-            {models.map((model) => (
+            {displayModels.map((model) => (
               <div key={model.provider} className="model-card">
                 <div className="model-header">
                   <span className="model-name">{model.name}</span>
@@ -339,9 +411,9 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
                     <div className="api-key-input-wrapper">
                       <input
                         type={showApiKey[model.provider] ? 'text' : 'password'}
-                        value={model.apiKey}
+                        value={model.displayApiKey}
                         onChange={(e) => handleApiKeyChange(model.provider, e.target.value)}
-                        placeholder={model.apiKey ? 'Configured' : 'Enter API Key'}
+                        placeholder={model.displayApiKey ? 'Configured' : 'Enter API Key'}
                         className="api-key-field"
                         data-provider={model.provider}
                       />
@@ -357,7 +429,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
                     <button
                       className="test-connection"
                       onClick={() => handleTestConnection(model.provider)}
-                      disabled={!model.apiKey || model.status === 'testing'}
+                      disabled={!model.displayApiKey || model.status === 'testing' || testingRef.current.has(model.provider)}
                     >
                       Test
                     </button>
