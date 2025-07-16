@@ -169,9 +169,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
   const handleTestConnection = async (provider: string): Promise<void> => {
     console.log('🔍 Testing connection for provider:', provider)
     
-    // 🔍 检查是否有API key
-    const currentModel = models.find(m => m.provider === provider)
-    if (!currentModel?.apiKey || currentModel.apiKey.trim() === '') {
+    // 🔍 直接从DOM获取当前输入框的值，避免状态同步问题
+    const inputElement = document.querySelector(`input[data-provider="${provider}"]`) as HTMLInputElement
+    const currentApiKey = inputElement?.value || ''
+    
+    console.log('🔑 Current API key from input:', currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY')
+    
+    if (!currentApiKey || currentApiKey.trim() === '') {
       console.warn('⚠️ No API key provided for', provider)
       setModels((prev) =>
         prev.map((model) =>
@@ -190,13 +194,27 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
 
     try {
       console.log('🚀 Starting connection test for', provider)
+      
+      // 🔑 先更新localStorage中的API key，确保testAIConnection能获取到最新值
+      const savedSettings = localStorage.getItem('quick-trans-api-settings')
+      if (savedSettings) {
+        const parsedSettings = JSON.parse(savedSettings)
+        const updatedSettings = parsedSettings.map((config: any) => 
+          config.provider === provider 
+            ? { ...config, apiKey: currentApiKey }
+            : config
+        )
+        localStorage.setItem('quick-trans-api-settings', JSON.stringify(updatedSettings))
+        console.log('🔑 Updated API key in localStorage for testing')
+      }
+      
       const isConnected = await testAIConnection(provider as AIProvider)
       console.log('🔍 Connection test result for', provider, ':', isConnected)
       
       setModels((prev) =>
         prev.map((model) =>
           model.provider === provider
-            ? { ...model, status: isConnected ? 'connected' : 'failed' }
+            ? { ...model, status: isConnected ? 'connected' : 'failed', apiKey: currentApiKey }
             : model
         )
       )
@@ -205,7 +223,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       setModels((prev) =>
         prev.map((model) =>
           model.provider === provider
-            ? { ...model, status: 'failed' }
+            ? { ...model, status: 'failed', apiKey: currentApiKey }
             : model
         )
       )
@@ -325,6 +343,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
                         onChange={(e) => handleApiKeyChange(model.provider, e.target.value)}
                         placeholder={model.apiKey ? 'Configured' : 'Enter API Key'}
                         className="api-key-field"
+                        data-provider={model.provider}
                       />
                       <button
                         className="toggle-visibility-inside"
