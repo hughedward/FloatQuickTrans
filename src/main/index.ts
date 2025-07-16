@@ -13,86 +13,117 @@ import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import '../model/proxy'
+// 窗口管理器
+class WindowManager {
+  private windows: Set<BrowserWindow> = new Set()
+  private windowOffset = 0
+
+  createWindow(): BrowserWindow {
+    const window = new BrowserWindow({
+      width: 520,
+      height: 196,
+      x: 100 + this.windowOffset * 30, // 位置偏移
+      y: 100 + this.windowOffset * 30,
+      show: false,
+      autoHideMenuBar: true,
+      type: 'panel',
+      alwaysOnTop: true,
+      skipTaskbar: false,
+      resizable: false,
+      frame: false,
+      transparent: true,
+      visualEffectState: 'active',
+      titleBarStyle: 'hidden',
+      fullscreenable: false,
+      maximizable: false,
+      minimizable: false,
+      closable: true,
+      acceptFirstMouse: true,
+      movable: true,
+      ...(process.platform === 'linux' ? { icon } : {}),
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        sandbox: false,
+        nodeIntegration: false,
+        contextIsolation: true
+      }
+    })
+
+    // 窗口设置
+    window.setAlwaysOnTop(true, 'floating')
+    window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+    
+    if (process.platform === 'darwin') {
+      window.setWindowButtonVisibility(false)
+    }
+
+    // 窗口事件
+    window.on('ready-to-show', () => {
+      window.show()
+      window.focus()
+      window.setAlwaysOnTop(true, 'floating')
+    })
+
+    window.on('blur', () => {
+      window.setAlwaysOnTop(true, 'floating')
+    })
+
+    window.on('close', (event) => {
+      if (!isQuitting && this.windows.size > 1) {
+        // 多窗口时直接关闭当前窗口
+        this.removeWindow(window)
+      } else if (!isQuitting && this.windows.size === 1) {
+        // 最后一个窗口时隐藏到托盘
+        event.preventDefault()
+        window.hide()
+      }
+    })
+
+    window.webContents.setWindowOpenHandler((details) => {
+      shell.openExternal(details.url)
+      return { action: 'deny' }
+    })
+
+    // 加载页面
+    if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+      window.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    } else {
+      window.loadFile(join(__dirname, '../renderer/index.html'))
+    }
+
+    this.addWindow(window)
+    return window
+  }
+
+  addWindow(window: BrowserWindow): void {
+    this.windows.add(window)
+    this.windowOffset = (this.windowOffset + 1) % 10 // 限制偏移量
+  }
+
+  removeWindow(window: BrowserWindow): void {
+    this.windows.delete(window)
+  }
+
+  getAllWindows(): BrowserWindow[] {
+    return Array.from(this.windows)
+  }
+
+  getWindowCount(): number {
+    return this.windows.size
+  }
+
+  getFirstWindow(): BrowserWindow | null {
+    return this.windows.values().next().value || null
+  }
+}
+
 // 全局变量
-let mainWindow: BrowserWindow | null = null
+const windowManager = new WindowManager()
 let tray: Tray | null = null
 let isQuitting = false // 标记应用是否正在退出
 
-function createWindow(): void {
-  // Create the browser window with super floating configuration
-  mainWindow = new BrowserWindow({
-    width: 520,
-    height: 196,
-    show: false,
-    autoHideMenuBar: true,
-    // 🚀 超级悬浮核心配置 - 参考 free-cluely
-    type: 'panel', // 🏷️ 保持面板类型，寻找其他解决方案
-    alwaysOnTop: true, // 始终置顶
-    skipTaskbar: false, // 任务栏显示
-    resizable: false, // 固定大小
-    frame: false, // 无边框
-    transparent: true, // 启用透明背景！
-    // vibrancy: 'fullscreen-ui', // 🏷️ 已禁用系统级毛玻璃效果，让主体完全透明
-    visualEffectState: 'active', // 视觉效果状态
-    titleBarStyle: 'hidden', // 隐藏标题栏
-    fullscreenable: false, // 禁止全屏
-    maximizable: false, // 禁止最大化
-    minimizable: false, // 禁止最小化
-    closable: true, // 允许关闭
-    acceptFirstMouse: true, // 接受第一次鼠标点击
-    movable: true, // 允许移动窗口（配合 CSS 拖拽）
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-      nodeIntegration: false,
-      contextIsolation: true
-    }
-  })
-
-  // 额外的超级悬浮设置
-  mainWindow.setAlwaysOnTop(true, 'floating') // 🏷️ 改为浮动级别，不遮挡输入法
-  mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true }) // 全屏模式下也可见
-
-  // 禁用窗口在失去焦点时隐藏
-  if (process.platform === 'darwin') {
-    mainWindow.setWindowButtonVisibility(false) // 隐藏窗口按钮
-  }
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow?.show()
-    // 确保窗口获得焦点后立即设置超级悬浮
-    mainWindow?.focus()
-    mainWindow?.setAlwaysOnTop(true, 'floating')
-  })
-
-  // 防止窗口失去焦点时隐藏
-  mainWindow.on('blur', () => {
-    mainWindow?.setAlwaysOnTop(true, 'floating')
-  })
-
-  // 修改窗口关闭行为：区分手动关闭和系统退出
-  mainWindow.on('close', (event) => {
-    if (!isQuitting) {
-      // 用户手动关闭窗口（点击X）→ 隐藏到托盘
-      event.preventDefault()
-      mainWindow?.hide()
-    }
-    // 如果 isQuitting = true（Cmd+Q），不调用 preventDefault()，让应用正常退出
-  })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
+function createWindow(): BrowserWindow {
+  return windowManager.createWindow()
 }
 
 // 创建系统托盘
@@ -178,39 +209,45 @@ function createTray(): void {
 
 // 显示窗口
 function showWindow(): void {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore()
+  const firstWindow = windowManager.getFirstWindow()
+  if (firstWindow) {
+    if (firstWindow.isMinimized()) {
+      firstWindow.restore()
     }
-    mainWindow.show()
-    mainWindow.focus()
+    firstWindow.show()
+    firstWindow.focus()
 
     // 确保超级悬浮设置
     if (isAlwaysOnTop) {
-      mainWindow.setAlwaysOnTop(true, 'floating')
+      firstWindow.setAlwaysOnTop(true, 'floating')
     }
   }
 }
 
 // 隐藏窗口
 function hideWindow(): void {
-  if (mainWindow) {
-    mainWindow.hide()
+  const firstWindow = windowManager.getFirstWindow()
+  if (firstWindow) {
+    firstWindow.hide()
   }
 }
 
 // 切换超级悬浮模式
 function toggleAlwaysOnTop(): void {
-  if (mainWindow) {
+  const firstWindow = windowManager.getFirstWindow()
+  if (firstWindow) {
     isAlwaysOnTop = !isAlwaysOnTop
 
-    if (isAlwaysOnTop) {
-      mainWindow.setAlwaysOnTop(true, 'floating')
-      mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-    } else {
-      mainWindow.setAlwaysOnTop(false)
-      mainWindow.setVisibleOnAllWorkspaces(false)
-    }
+    // 应用到所有窗口
+    windowManager.getAllWindows().forEach(window => {
+      if (isAlwaysOnTop) {
+        window.setAlwaysOnTop(true, 'floating')
+        window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+      } else {
+        window.setAlwaysOnTop(false)
+        window.setVisibleOnAllWorkspaces(false)
+      }
+    })
 
     // 更新托盘菜单
     updateTrayMenu()
@@ -248,8 +285,9 @@ function registerGlobalShortcuts(): void {
     const registered = globalShortcut.register(toggleShortcut, () => {
       console.log('🎯 全局快捷键触发:', toggleShortcut)
 
-      if (mainWindow) {
-        if (mainWindow.isVisible() && mainWindow.isFocused()) {
+      const firstWindow = windowManager.getFirstWindow()
+      if (firstWindow) {
+        if (firstWindow.isVisible() && firstWindow.isFocused()) {
           // 窗口可见且获得焦点：隐藏窗口
           hideWindow()
         } else {
@@ -259,10 +297,24 @@ function registerGlobalShortcuts(): void {
       }
     })
 
+    // ⌘ + N / Ctrl + N - 新建窗口
+    const newWindowShortcut = process.platform === 'darwin' ? 'Command+N' : 'Ctrl+N'
+    
+    const newWindowRegistered = globalShortcut.register(newWindowShortcut, () => {
+      console.log('🎯 新建窗口快捷键触发:', newWindowShortcut)
+      createWindow()
+    })
+
     if (registered) {
       console.log(`✅ 全局快捷键注册成功: ${toggleShortcut}`)
     } else {
       console.error(`❌ 全局快捷键注册失败: ${toggleShortcut}`)
+    }
+
+    if (newWindowRegistered) {
+      console.log(`✅ 新建窗口快捷键注册成功: ${newWindowShortcut}`)
+    } else {
+      console.error(`❌ 新建窗口快捷键注册失败: ${newWindowShortcut}`)
     }
 
     // 可选：添加第二个快捷键 Option+Space (macOS专用)
@@ -271,8 +323,9 @@ function registerGlobalShortcuts(): void {
       const altRegistered = globalShortcut.register(altShortcut, () => {
         console.log('🎯 备用快捷键触发:', altShortcut)
 
-        if (mainWindow) {
-          if (mainWindow.isVisible()) {
+        const firstWindow = windowManager.getFirstWindow()
+        if (firstWindow) {
+          if (firstWindow.isVisible()) {
             hideWindow()
           } else {
             showWindow()
@@ -413,7 +466,7 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (windowManager.getWindowCount() === 0) createWindow()
   })
 })
 
