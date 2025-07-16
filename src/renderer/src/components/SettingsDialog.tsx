@@ -28,7 +28,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       apiKey: '',
       baseURL: 'https://api.deepseek.com',
       model: 'deepseek-chat',
-      status: 'connected'
+      status: 'unknown' // 🔧 修复：改为unknown，让用户手动测试
     },
     {
       name: 'OpenAI',
@@ -98,7 +98,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             apiKey: '', // 🔑 需要用户手动配置
             baseURL: 'https://api.deepseek.com',
             model: 'deepseek-chat',
-            status: 'unknown' as const
+            status: 'unknown' as const // 🔧 修复：统一为unknown
           },
           {
             name: 'OpenAI',
@@ -121,7 +121,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             provider: 'claude' as const,
             apiKey: '',
             baseURL: 'https://api.anthropic.com',
-            model: 'claude-3-sonnet',
+            model: 'claude-3-sonnet', // 🔧 修复：保持一致的模型名
             status: 'unknown' as const
           }
         ]
@@ -167,14 +167,32 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
   }
 
   const handleTestConnection = async (provider: string): Promise<void> => {
+    console.log('🔍 Testing connection for provider:', provider)
+    
+    // 🔍 检查是否有API key
+    const currentModel = models.find(m => m.provider === provider)
+    if (!currentModel?.apiKey || currentModel.apiKey.trim() === '') {
+      console.warn('⚠️ No API key provided for', provider)
+      setModels((prev) =>
+        prev.map((model) =>
+          model.provider === provider
+            ? { ...model, status: 'failed' }
+            : model
+        )
+      )
+      return
+    }
+    
+    // 🔄 设置测试状态
     setModels((prev) =>
       prev.map((model) => (model.provider === provider ? { ...model, status: 'testing' } : model))
     )
 
-    // 模拟连接测试
-    setTimeout(async () => {
+    try {
+      console.log('🚀 Starting connection test for', provider)
       const isConnected = await testAIConnection(provider as AIProvider)
-      console.log('🔍 isConnected---->:', isConnected)
+      console.log('🔍 Connection test result for', provider, ':', isConnected)
+      
       setModels((prev) =>
         prev.map((model) =>
           model.provider === provider
@@ -182,7 +200,16 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
             : model
         )
       )
-    }, 1500)
+    } catch (error) {
+      console.error('❌ Connection test failed for', provider, ':', error)
+      setModels((prev) =>
+        prev.map((model) =>
+          model.provider === provider
+            ? { ...model, status: 'failed' }
+            : model
+        )
+      )
+    }
   }
 
   const getStatusText = (status: string): string => {
@@ -214,16 +241,38 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     setIsTestingAll(true)
     setActionFeedback('Testing all connections...')
 
-    const testPromises = models
-      .filter((model) => model.apiKey.trim() !== '')
-      .map((model) => handleTestConnection(model.provider))
+    // 🔍 获取有API key的模型
+    const modelsWithApiKey = models.filter((model) => model.apiKey.trim() !== '')
+    
+    if (modelsWithApiKey.length === 0) {
+      setActionFeedback('No API keys configured')
+      setIsTestingAll(false)
+      setTimeout(() => setActionFeedback(''), 3000)
+      return
+    }
+
+    console.log('🚀 Testing connections for', modelsWithApiKey.length, 'providers')
 
     try {
+      // 🔄 并行测试所有连接
+      const testPromises = modelsWithApiKey.map((model) => 
+        handleTestConnection(model.provider)
+      )
+
       await Promise.all(testPromises)
-      const connectedCount = models.filter((m) => m.status === 'connected').length
-      const totalCount = models.filter((m) => m.apiKey.trim() !== '').length
-      setActionFeedback(`Complete: ${connectedCount}/${totalCount} connected`)
-    } catch {
+      
+      // 🔍 等待状态更新后计算结果
+      setTimeout(() => {
+        const currentModels = models.filter((m) => m.apiKey.trim() !== '')
+        const connectedCount = currentModels.filter((m) => m.status === 'connected').length
+        const totalCount = currentModels.length
+        
+        console.log('📊 Test results:', connectedCount, '/', totalCount, 'connected')
+        setActionFeedback(`Complete: ${connectedCount}/${totalCount} connected`)
+      }, 500)
+      
+    } catch (error) {
+      console.error('❌ Test all failed:', error)
       setActionFeedback('Some tests failed')
     } finally {
       setIsTestingAll(false)

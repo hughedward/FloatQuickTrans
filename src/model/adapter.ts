@@ -47,22 +47,18 @@ export class TranslatorFactory {
       !hasInstance || (currentApiKey !== cachedApiKey && currentApiKey.trim() !== '')
 
     if (needsRecreation) {
-      if (hasInstance) {
+      if (hasInstance && currentApiKey !== cachedApiKey) {
         console.log('🔄 API key changed, recreating translator instance for:', provider)
         this.instances.delete(provider)
-      } else {
+      } else if (!hasInstance) {
         console.log('🔍 Creating new translator instance for:', provider)
       }
-
-      console.log('🔍 Provider type:', typeof provider)
-      console.log('🔍 AIProvider.DEEPSEEK value:', AIProvider.DEEPSEEK)
-      console.log('🔍 provider === AIProvider.DEEPSEEK:', provider === AIProvider.DEEPSEEK)
 
       switch (provider) {
         case AIProvider.DEEPSEEK:
           console.log(
             '🔍 Creating new DeepSeekTranslatorAdapter with API Key:',
-            currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'UNDEFINED'
+            currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY'
           )
           this.instances.set(provider, new DeepSeekTranslatorAdapter(currentApiKey))
           this.instanceApiKeys.set(provider, currentApiKey) // 🔑 缓存 API key
@@ -72,6 +68,10 @@ export class TranslatorFactory {
         case AIProvider.CLAUDE:
           throw new Error('Claude translator not implemented yet')
         case AIProvider.GEMINI:
+          console.log(
+            '🔍 Creating new GeminiTranslatorAdapter with API Key:',
+            currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY'
+          )
           this.instances.set(provider, new GeminiTranslatorAdapter(currentApiKey))
           this.instanceApiKeys.set(provider, currentApiKey) // 🔑 缓存 API key
           break
@@ -83,7 +83,12 @@ export class TranslatorFactory {
       console.log('🔍 Using existing translator instance for:', provider, '(API key unchanged)')
     }
 
-    return this.instances.get(provider)!
+    const instance = this.instances.get(provider)
+    if (!instance) {
+      throw new Error(`Failed to create translator instance for provider: ${provider}`)
+    }
+    
+    return instance
   }
 
   // 🔄 Reset translator instance (for changing API Key)
@@ -218,12 +223,26 @@ export class TranslationManager {
       'API Key:',
       apiKey ? `${apiKey.substring(0, 8)}...` : 'UNDEFINED'
     )
-    // 🔄 如果提供了新的 API key，清理缓存确保使用最新的
-    // if (apiKey && apiKey.trim() !== '') {
-    //   TranslatorFactory.resetTranslator(provider)
-    // }
+    
+    let finalApiKey = apiKey
+    
+    // 🔑 如果没有提供 API key，尝试从 localStorage 获取
+    if (!finalApiKey || finalApiKey.trim() === '') {
+      try {
+        const savedSettings = localStorage.getItem('quick-trans-api-settings')
+        if (savedSettings) {
+          const parsedSettings = JSON.parse(savedSettings)
+          const providerConfig = parsedSettings.find((config: any) => config.provider === provider)
+          finalApiKey = providerConfig?.apiKey || ''
+          console.log('🔑 Retrieved API key from localStorage for', provider, ':', finalApiKey ? `${finalApiKey.substring(0, 8)}...` : 'EMPTY')
+        }
+      } catch (error) {
+        console.warn('⚠️ Failed to retrieve API key from localStorage:', error)
+      }
+    }
+    
     this.currentProvider = provider
-    this.currentTranslator = TranslatorFactory.getTranslator(provider, apiKey)
+    this.currentTranslator = TranslatorFactory.getTranslator(provider, finalApiKey)
   }
 
   // 🔄 Switch AI provider
@@ -315,6 +334,27 @@ export async function translateWithAI(
 export async function testAIConnection(
   provider: AIProvider = AIProvider.DEEPSEEK
 ): Promise<boolean> {
-  const manager = new TranslationManager(provider)
-  return await manager.testCurrentConnection()
+  try {
+    // 🔑 从 localStorage 获取保存的 API 设置
+    const savedSettings = localStorage.getItem('quick-trans-api-settings')
+    let apiKey = ''
+    
+    if (savedSettings) {
+      const parsedSettings = JSON.parse(savedSettings)
+      const providerConfig = parsedSettings.find((config: any) => config.provider === provider)
+      apiKey = providerConfig?.apiKey || ''
+      console.log('🔍 Found API key for', provider, ':', apiKey ? `${apiKey.substring(0, 8)}...` : 'EMPTY')
+    }
+    
+    if (!apiKey || apiKey.trim() === '') {
+      console.warn('⚠️ No API key found for provider:', provider)
+      return false
+    }
+    
+    const manager = new TranslationManager(provider, apiKey)
+    return await manager.testCurrentConnection()
+  } catch (error) {
+    console.error('❌ testAIConnection failed:', error)
+    return false
+  }
 }
