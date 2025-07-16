@@ -4,10 +4,11 @@ import { TranslationManager } from '../../model/adapter'
 import { AIProvider } from '../../model/aiApi'
 import SettingsDialog from './components/SettingsDialog'
 import { ProviderContextProvider, useProvider } from './context/ProviderContext'
+import { COMPREHENSIVE_LANGUAGES } from '../../model/languages/languageMap'
 // import { validateLanguage, getLanguageDisplayName } from '../../model/languages'
 
-// 🔊 朗读功能
-const languageMap: Record<string, string> = {
+// 🔊 朗读功能 - 标准语言名称到TTS语言代码的映射
+const ttsLanguageMap: Record<string, string> = {
   'Chinese': 'zh-CN',
   'English': 'en-US',
   'Japanese': 'ja-JP',
@@ -16,6 +17,18 @@ const languageMap: Record<string, string> = {
   'Spanish': 'es-ES',
   'Korean': 'ko-KR',
   'Russian': 'ru-RU'
+}
+
+// 获取TTS语言代码的函数
+const getTTSLanguageCode = (userInput: string): string => {
+  // 第一步：用户输入 → 标准语言名称
+  const standardName = COMPREHENSIVE_LANGUAGES[userInput] || userInput
+  
+  // 第二步：标准语言名称 → TTS语言代码
+  const ttsCode = ttsLanguageMap[standardName] || 'en-US'
+  
+  console.log(`🔊 语言映射: "${userInput}" → "${standardName}" → "${ttsCode}"`)
+  return ttsCode
 }
 
 // 朗读文本函数
@@ -304,7 +317,7 @@ function App(): React.JSX.Element {
       console.log('🔇 停止朗读翻译结果')
     } else {
       // 开始朗读
-      const language = languageMap[targetLanguage] || 'en-US'
+      const language = getTTSLanguageCode(targetLanguage)
       setIsOutputSpeaking(true)
       
       const utterance = new SpeechSynthesisUtterance(translatedText)
