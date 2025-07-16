@@ -19,26 +19,68 @@ import { GeminiTranslator } from './gemini/index'
 // 🎯 翻译器工厂类
 export class TranslatorFactory {
   private static instances: Map<AIProvider, AITranslator> = new Map()
+  private static instanceApiKeys: Map<AIProvider, string> = new Map() // 🔑 缓存每个实例对应的 API key
 
   // 🏭 获取翻译器实例
   static getTranslator(provider: AIProvider, apiKey?: string): AITranslator {
-    if (!this.instances.has(provider)) {
+    console.log(
+      '🔍 TranslatorFactory.getTranslator called with:',
+      provider,
+      'API Key:',
+      apiKey ? `${apiKey.substring(0, 8)}...` : 'UNDEFINED'
+    )
+
+    const currentApiKey = apiKey || ''
+    const cachedApiKey = this.instanceApiKeys.get(provider) || ''
+    const hasInstance = this.instances.has(provider)
+
+    console.log(
+      '🔍 Current API key:',
+      currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY'
+    )
+    console.log('🔍 Cached API key:', cachedApiKey ? `${cachedApiKey.substring(0, 8)}...` : 'EMPTY')
+    console.log('🔍 Has instance:', hasInstance)
+    console.log('🔍 API key changed:', currentApiKey !== cachedApiKey)
+
+    // 🔄 如果 API key 改变了，或者没有实例，需要重新创建
+    const needsRecreation =
+      !hasInstance || (currentApiKey !== cachedApiKey && currentApiKey.trim() !== '')
+
+    if (needsRecreation) {
+      if (hasInstance) {
+        console.log('🔄 API key changed, recreating translator instance for:', provider)
+        this.instances.delete(provider)
+      } else {
+        console.log('🔍 Creating new translator instance for:', provider)
+      }
+
+      console.log('🔍 Provider type:', typeof provider)
+      console.log('🔍 AIProvider.DEEPSEEK value:', AIProvider.DEEPSEEK)
+      console.log('🔍 provider === AIProvider.DEEPSEEK:', provider === AIProvider.DEEPSEEK)
+
       switch (provider) {
         case AIProvider.DEEPSEEK:
-          this.instances.set(provider, new DeepSeekTranslatorAdapter(apiKey))
+          console.log(
+            '🔍 Creating new DeepSeekTranslatorAdapter with API Key:',
+            currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'UNDEFINED'
+          )
+          this.instances.set(provider, new DeepSeekTranslatorAdapter(currentApiKey))
+          this.instanceApiKeys.set(provider, currentApiKey) // 🔑 缓存 API key
           break
         case AIProvider.OPENAI:
-          // TODO: Implement OpenAI translator
           throw new Error('OpenAI translator not implemented yet')
         case AIProvider.CLAUDE:
-          // TODO: Implement Claude translator
           throw new Error('Claude translator not implemented yet')
         case AIProvider.GEMINI:
-          this.instances.set(provider, new GeminiTranslatorAdapter(apiKey))
+          this.instances.set(provider, new GeminiTranslatorAdapter(currentApiKey))
+          this.instanceApiKeys.set(provider, currentApiKey) // 🔑 缓存 API key
           break
         default:
+          console.log('🚨 Unknown provider in switch:', provider)
           throw new Error(`Unsupported AI provider: ${provider}`)
       }
+    } else {
+      console.log('🔍 Using existing translator instance for:', provider, '(API key unchanged)')
     }
 
     return this.instances.get(provider)!
@@ -47,6 +89,13 @@ export class TranslatorFactory {
   // 🔄 Reset translator instance (for changing API Key)
   static resetTranslator(provider: AIProvider): void {
     this.instances.delete(provider)
+    this.instanceApiKeys.delete(provider) // 🔑 同时清除缓存的 API key
+  }
+
+  // 🔄 Reset all translator instances
+  static resetAllTranslators(): void {
+    this.instances.clear()
+    this.instanceApiKeys.clear() // 🔑 清除所有缓存的 API key
   }
 
   // 📋 Get supported providers list
@@ -60,6 +109,10 @@ class DeepSeekTranslatorAdapter implements AITranslator {
   private translator: DeepSeekTranslator
 
   constructor(apiKey?: string) {
+    console.log(
+      '🔍 DeepSeekTranslatorAdapter constructor - received API Key:',
+      apiKey ? `${apiKey.substring(0, 8)}...` : 'UNDEFINED'
+    )
     this.translator = new DeepSeekTranslator(apiKey)
   }
 
@@ -159,6 +212,16 @@ export class TranslationManager {
   private currentTranslator: AITranslator
 
   constructor(provider: AIProvider = AIProvider.DEEPSEEK, apiKey?: string) {
+    console.log(
+      '🔍 TranslationManager constructor called with provider:',
+      provider,
+      'API Key:',
+      apiKey ? `${apiKey.substring(0, 8)}...` : 'UNDEFINED'
+    )
+    // 🔄 如果提供了新的 API key，清理缓存确保使用最新的
+    // if (apiKey && apiKey.trim() !== '') {
+    //   TranslatorFactory.resetTranslator(provider)
+    // }
     this.currentProvider = provider
     this.currentTranslator = TranslatorFactory.getTranslator(provider, apiKey)
   }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import './SettingsDialog.css'
 import { useProvider } from '../context/ProviderContext'
+import { AIProvider } from '../../../model/aiApi'
 
 interface SettingsDialogProps {
   isOpen: boolean
@@ -66,7 +67,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
     try {
       const savedProvider = localStorage.getItem('quick-trans-current-provider')
       if (savedProvider) {
-        setCurrentProvider(savedProvider as 'openai' | 'deepseek' | 'gemini' | 'claude')
+        setCurrentProvider(
+          savedProvider as
+            | AIProvider.OPENAI
+            | AIProvider.DEEPSEEK
+            | AIProvider.GEMINI
+            | AIProvider.CLAUDE
+        )
         console.log('✅ Loaded current provider:', savedProvider)
       }
     } catch (error) {

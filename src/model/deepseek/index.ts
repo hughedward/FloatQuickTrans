@@ -16,9 +16,18 @@ export class DeepSeekTranslator {
   private client: OpenAI
 
   constructor(apiKey?: string) {
+    const finalApiKey = apiKey || DEEPSEEK_CONFIG.apiKey
+    console.log(
+      '🔑 DeepSeek constructor - API Key:',
+      finalApiKey ? `${finalApiKey.substring(0, 8)}...` : 'MISSING'
+    )
+
     this.client = new OpenAI({
       baseURL: DEEPSEEK_CONFIG.baseURL,
-      apiKey: apiKey || DEEPSEEK_CONFIG.apiKey,
+      apiKey: finalApiKey,
+      defaultHeaders: {
+        Authorization: `Bearer ${finalApiKey}`
+      },
       dangerouslyAllowBrowser: true // 🔐 Electron环境安全，允许浏览器调用
     })
   }
@@ -200,6 +209,7 @@ export async function translateWithDeepSeek(
   apiKey?: string
 ): Promise<void> {
   const translator = new DeepSeekTranslator(apiKey)
+  console.log('🔑 translateWithDeepSeek - API Key---->:', apiKey)
   await translator.translateStream(text, targetLang, onStream)
 }
 

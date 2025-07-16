@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
-import { translateWithDeepSeek, testDeepSeekConnection } from '../../model/deepseek/index'
 import { TranslationManager } from '../../model/adapter'
 import { AIProvider } from '../../model/aiApi'
 import SettingsDialog from './components/SettingsDialog'
@@ -207,13 +206,15 @@ function App(): React.JSX.Element {
   const testConnection = async (): Promise<void> => {
     setConnectionStatus('testing')
     try {
-      const isConnected = await testDeepSeekConnection()
+      // 使用 TranslationManager 测试连接
+      const manager = new TranslationManager(currentProvider)
+      const isConnected = await manager.testCurrentConnection()
       setConnectionStatus(isConnected ? 'connected' : 'failed')
 
       if (isConnected) {
-        console.log('✅ DeepSeek connection test successful')
+        console.log('✅ Connection test successful')
       } else {
-        console.log('❌ DeepSeek connection test failed')
+        console.log('❌ Connection test failed')
       }
     } catch (error) {
       console.error('🚨 Connection test error:', error)
@@ -264,59 +265,29 @@ function App(): React.JSX.Element {
       if (apiKey && apiKey.trim() !== '') {
         console.log(`🔑 Using real API with streaming translation via ${currentProvider}`)
 
-        // 🎯 根据当前提供商选择翻译方式
-        if (currentProvider === AIProvider.DEEPSEEK) {
-          // 🔄 保持DeepSeek原有直接调用方式（阶段3再迁移）
-          await translateWithDeepSeek(
-            text,
-            (chunk: string, isComplete: boolean) => {
-              if (chunk && !isComplete) {
-                // 流式追加文本
-                setTranslatedText((prev) => prev + chunk)
+        // 统一使用 TranslationManager
+        const manager = new TranslationManager(currentProvider, apiKey)
+        await manager.translateTo(text, targetLanguage, (chunk: string, isComplete: boolean) => {
+          if (chunk && !isComplete) {
+            // 流式追加文本
+            setTranslatedText((prev) => prev + chunk)
 
-                // 🎯 每次更新都同步窗口高度
-                setTimeout(() => {
-                  syncWindowWithContent()
-                }, 50)
-              }
+            // 🎯 每次更新都同步窗口高度
+            setTimeout(() => {
+              syncWindowWithContent()
+            }, 50)
+          }
 
-              if (isComplete) {
-                console.log('✅ DeepSeek streaming translation completed')
-                // 🎯 翻译完成后最终同步窗口高度
-                setTimeout(() => {
-                  syncWindowWithContent()
-                }, 100)
-              }
-            },
-            targetLanguage,
-            apiKey // 🔑 传递API Key
-          )
-        } else {
-          // 🚀 使用适配器模式（Gemini等新提供商）
-          console.log(`🚀 Using adapter mode for ${currentProvider}`)
-          const manager = new TranslationManager(currentProvider, apiKey)
-
-          await manager.translateTo(text, targetLanguage, (chunk: string, isComplete: boolean) => {
-            if (chunk && !isComplete) {
-              // 流式追加文本
-              setTranslatedText((prev) => prev + chunk)
-
-              // 🎯 每次更新都同步窗口高度
-              setTimeout(() => {
-                syncWindowWithContent()
-              }, 50)
-            }
-
-            if (isComplete) {
-              console.log(`✅ ${currentProvider} streaming translation completed`)
-              // 🎯 翻译完成后最终同步窗口高度
-              setTimeout(() => {
-                syncWindowWithContent()
-              }, 100)
-            }
-          })
-        }
+          if (isComplete) {
+            console.log(`✅ ${currentProvider} streaming translation completed`)
+            // 🎯 翻译完成后最终同步窗口高度
+            setTimeout(() => {
+              syncWindowWithContent()
+            }, 100)
+          }
+        })
       } else {
+        // Mock 翻译逻辑保持不变
         console.log('🧪 Using Mock translation with typing effect')
         // Mock翻译也模拟流式效果
         const result = await mockTranslateText(text, targetLanguage)
