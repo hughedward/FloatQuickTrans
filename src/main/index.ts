@@ -280,42 +280,42 @@ function hasVisibleWindow(): boolean {
 // }
 
 // 更新托盘菜单
-function updateTrayMenu(): void {
-  if (tray) {
-    const contextMenu = Menu.buildFromTemplate([
-      {
-        label: 'About FloatQuickTrans',
-        click: () => {
-          shell.openExternal('https://github.com/hughedward/FloatQuickTrans')
-        }
-      },
-      {
-        label: 'Version Info',
-        click: () => {
-          const version = app.getVersion()
-          dialog.showMessageBox({
-            type: 'info',
-            title: 'About FloatQuickTrans',
-            message: 'FloatQuickTrans',
-            detail: `Version: ${version}\nAuthor: Hugh Edward\nHomepage: https://github.com/hughedward/FloatQuickTrans\n\nProfessional Floating AI Translation Tool\nReal-time streaming translation • Multi-window support • Text-to-speech • Always on top`,
-            buttons: ['OK']
-          })
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Quit',
-        click: () => {
-          app.quit()
-        }
-      }
-    ])
+// function updateTrayMenu(): void {
+//   if (tray) {
+//     const contextMenu = Menu.buildFromTemplate([
+//       {
+//         label: 'About FloatQuickTrans',
+//         click: () => {
+//           shell.openExternal('https://github.com/hughedward/FloatQuickTrans')
+//         }
+//       },
+//       {
+//         label: 'Version Info',
+//         click: () => {
+//           const version = app.getVersion()
+//           dialog.showMessageBox({
+//             type: 'info',
+//             title: 'About FloatQuickTrans',
+//             message: 'FloatQuickTrans',
+//             detail: `Version: ${version}\nAuthor: Hugh Edward\nHomepage: https://github.com/hughedward/FloatQuickTrans\n\nProfessional Floating AI Translation Tool\nReal-time streaming translation • Multi-window support • Text-to-speech • Always on top`,
+//             buttons: ['OK']
+//           })
+//         }
+//       },
+//       {
+//         type: 'separator'
+//       },
+//       {
+//         label: 'Quit',
+//         click: () => {
+//           app.quit()
+//         }
+//       }
+//     ])
 
-    tray.setContextMenu(contextMenu)
-  }
-}
+//     tray.setContextMenu(contextMenu)
+//   }
+// }
 
 // 注册全局快捷键
 function registerGlobalShortcuts(): void {

@@ -87,7 +87,7 @@ export class TranslatorFactory {
     if (!instance) {
       throw new Error(`Failed to create translator instance for provider: ${provider}`)
     }
-    
+
     return instance
   }
 
@@ -223,9 +223,9 @@ export class TranslationManager {
       'API Key:',
       apiKey ? `${apiKey.substring(0, 8)}...` : 'UNDEFINED'
     )
-    
+
     let finalApiKey = apiKey
-    
+
     // 🔑 如果没有提供 API key，尝试从 localStorage 获取
     if (!finalApiKey || finalApiKey.trim() === '') {
       try {
@@ -240,7 +240,7 @@ export class TranslationManager {
         console.warn('⚠️ Failed to retrieve API key from localStorage:', error)
       }
     }
-    
+
     this.currentProvider = provider
     this.currentTranslator = TranslatorFactory.getTranslator(provider, finalApiKey)
   }
@@ -338,19 +338,19 @@ export async function testAIConnection(
     // 🔑 从 localStorage 获取保存的 API 设置
     const savedSettings = localStorage.getItem('quick-trans-api-settings')
     let apiKey = ''
-    
+
     if (savedSettings) {
       const parsedSettings = JSON.parse(savedSettings)
       const providerConfig = parsedSettings.find((config: any) => config.provider === provider)
       apiKey = providerConfig?.apiKey || ''
       console.log('🔍 Found API key for', provider, ':', apiKey ? `${apiKey.substring(0, 8)}...` : 'EMPTY')
     }
-    
+
     if (!apiKey || apiKey.trim() === '') {
       console.warn('⚠️ No API key found for provider:', provider)
       return false
     }
-    
+
     const manager = new TranslationManager(provider, apiKey)
     return await manager.testCurrentConnection()
   } catch (error) {
