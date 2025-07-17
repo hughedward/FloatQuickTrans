@@ -41,17 +41,18 @@
 ## 🖼️ Screenshots
 
 <div align="center">
+
 ### Main Interface
 Floating window stays above all applications
 <img src="imgs/image-20250717151804217.png" width="400" height="250">
 
-<img src="imgs/image-20250717120434391.png" width="400" height="250">
+ <img src="imgs/image-20250717120434391.png" width="400" height="250">
 
 ### Multi-window Mode
 
-<img src="imgs/image-20250717120315825.png" width="600" height="300">
+ <img src="imgs/image-20250717120315825.png" width="600" height="300">
 
-<img src="imgs/image-202507171407527101.png" width="600" height="300">
+ <img src="imgs/image-202507171407527101.png" width="600" height="300">
 
 
 
@@ -59,7 +60,7 @@ Floating window stays above all applications
 
 > **Go** https://aistudio.google.com/app/apikey  🧚‍♀️
 
-<img src="imgs/image-20250717120503183.png" width="400" height="200">
+ <img src="imgs/image-20250717120503183.png" width="400" height="200">
 
 </div>
 
