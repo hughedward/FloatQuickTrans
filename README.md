@@ -36,7 +36,7 @@
 - **Google Gemini** - Advanced AI capabilities
 - <i>TODO</i>:**Claude** - Anthropic's powerful language model
 
-> ⚠️ OpenAI and Claude:  No API keys available yet, so no support for now.  Sorry about that.
+> <i><font color=red>⚠️ OpenAI and Claude:  No API keys available yet, so no support for now.  Sorry about that.</font></i>
 
 ### 🌐 **Language Support**
 - **30+ Languages** - Major world languages supported
@@ -72,6 +72,8 @@ Floating window stays above all applications
 ### Settings Panel
 
 > **Go** https://aistudio.google.com/app/apikey  🧚‍♀️
+>
+> Or https://platform.deepseek.com/usage 🐳
 
  <img src="imgs/image-20250717120503183.png" width="400" height="200">
 
