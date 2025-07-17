@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🌍 FloatQuickTrans
+# 🌍 FloatQuickTrans🎉
 
-**A Professional Floating AI Translation Tool**
+**A Professional Floating AI Translation Tool** 
 
 *Real-time streaming translation • Multi-window support • Text-to-speech • Always on top*
 
@@ -16,6 +16,14 @@
 
 ---
 
+### 👀 Quick Look
+
+<video src="./imgs/Video_01.mov"></video>
+
+
+
+<video src="./imgs/Video_02.mov"></video>
+
 ## ✨ Features
 
 ### 🚀 **Core Capabilities**
@@ -26,10 +34,12 @@
 - **🎯 Global Hotkeys** - Quick access with `Cmd+Shift+Y` or `Option+Space`
 
 ### 🤖 **AI Provider Support**
-- **OpenAI GPT** - GPT-3.5, GPT-4, GPT-4o
+- <i>TODO</i>: **OpenAI GPT** - GPT-3.5, GPT-4, GPT-4o
 - **DeepSeek** - High-quality translations
 - **Google Gemini** - Advanced AI capabilities
-- **Claude** - Anthropic's powerful language model
+- <i>TODO</i>:**Claude** - Anthropic's powerful language model
+
+> ⚠️ OpenAI and Claude:  No API keys available yet, so no support for now.  Sorry about that.
 
 ### 🌐 **Language Support**
 - **30+ Languages** - Major world languages supported
@@ -45,7 +55,7 @@ Floating window stays above all applications
 
 ---
 
-  <img src="imgs/image-20250717153112790.png" width="400" height="250">
+  <img src="imgs/image-20250717153112790.png">
 
 
 
