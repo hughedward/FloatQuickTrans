@@ -16,7 +16,7 @@
 
 ---
 
-### 👀 Quick Look
+### 👀 Quick Look (Videos)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/vU78uvya_OE/0.jpg)](https://www.youtube.com/watch?v=vU78uvya_OE)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/ki4z5593GHs/0.jpg)](https://www.youtube.com/watch?v=ki4z5593GHs)
 
