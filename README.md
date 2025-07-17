@@ -43,6 +43,8 @@
 <div align="center">
 ### Main Interface
 
+
+
 <img src="imgs/image-20250717151804217.png" width="400" height="250">
 
 <img src="imgs/image-20250717120434391.png" width="400" height="250">
