@@ -258,26 +258,26 @@ function hasVisibleWindow(): boolean {
 }
 
 // 切换超级悬浮模式
-function toggleAlwaysOnTop(): void {
-  const firstWindow = windowManager.getFirstWindow()
-  if (firstWindow) {
-    isAlwaysOnTop = !isAlwaysOnTop
+// function toggleAlwaysOnTop(): void {
+//   const firstWindow = windowManager.getFirstWindow()
+//   if (firstWindow) {
+//     isAlwaysOnTop = !isAlwaysOnTop
 
-    // 应用到所有窗口
-    windowManager.getAllWindows().forEach(window => {
-      if (isAlwaysOnTop) {
-        window.setAlwaysOnTop(true, 'floating')
-        window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-      } else {
-        window.setAlwaysOnTop(false)
-        window.setVisibleOnAllWorkspaces(false)
-      }
-    })
+//     // 应用到所有窗口
+//     windowManager.getAllWindows().forEach(window => {
+//       if (isAlwaysOnTop) {
+//         window.setAlwaysOnTop(true, 'floating')
+//         window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+//       } else {
+//         window.setAlwaysOnTop(false)
+//         window.setVisibleOnAllWorkspaces(false)
+//       }
+//     })
 
-    // 更新托盘菜单
-    updateTrayMenu()
-  }
-}
+//     // 更新托盘菜单
+//     updateTrayMenu()
+//   }
+// }
 
 // 更新托盘菜单
 function updateTrayMenu(): void {
