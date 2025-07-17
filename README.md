@@ -42,9 +42,7 @@
 
 <div align="center">
 ### Main Interface
-
-
-
+Floating window stays above all applications
 <img src="imgs/image-20250717151804217.png" width="400" height="250">
 
 <img src="imgs/image-20250717120434391.png" width="400" height="250">
