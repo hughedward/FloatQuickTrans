@@ -17,13 +17,8 @@
 ---
 
 ### 👀 Quick Look
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/vU78uvya_OE?si=v1HnZpfqxvGi2gBT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ki4z5593GHs?si=1Dh4ihkzSIl4ZAof" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/vU78uvya_OE/0.jpg)](https://www.youtube.com/watch?v=vU78uvya_OE)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/ki4z5593GHs/0.jpg)](https://www.youtube.com/watch?v=ki4z5593GHs)
 
 
 ## ✨ Features
