@@ -1,0 +1,6 @@
+这里需要添加以下图片：
+1. main-interface.png - 主界面截图
+2. multi-window.png - 多窗口模式截图
+3. settings.png - 设置面板截图
+
+请使用实际的应用截图替换这些占位符。

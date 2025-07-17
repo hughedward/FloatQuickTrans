@@ -1,38 +1,181 @@
-# FloatQuickTrans
+<div align="center">
 
-A floating AI translation tool with real-time streaming output. Always on top, instant translation with 30+ languages support.
+# 🌍 FloatQuickTrans
 
-# electron-quick-trans
+**A Professional Floating AI Translation Tool**
 
-An Electron application with React and TypeScript
+*Real-time streaming translation • Multi-window support • Text-to-speech • Always on top*
 
-## Recommended IDE Setup
+[![Version](https://img.shields.io/badge/version-1.0.12-blue.svg)](https://github.com/hughedward/FloatQuickTrans)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/hughedward/FloatQuickTrans)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+[English](README.md) • [中文](docs/README-zh.md) • [日本語](docs/README-ja.md) • [Français](docs/README-fr.md) • [Deutsch](docs/README-de.md) • [Español](docs/README-es.md) • [한국어](docs/README-ko.md) • [Русский](docs/README-ru.md)
 
-## Project Setup
+</div>
 
-### Install
+---
+
+## ✨ Features
+
+### 🚀 **Core Capabilities**
+- **🌊 Real-time Streaming Translation** - Watch translations appear as they're generated
+- **🪟 Multi-window Support** - Create multiple translation windows with `Cmd+N`/`Ctrl+N`
+- **🔊 Text-to-Speech** - Listen to translations in 30+ languages
+- **📌 Always on Top** - Floating window stays above all applications
+- **🎯 Global Hotkeys** - Quick access with `Cmd+Shift+Y` or `Option+Space`
+
+### 🤖 **AI Provider Support**
+- **OpenAI GPT** - GPT-3.5, GPT-4, GPT-4o
+- **DeepSeek** - High-quality translations
+- **Google Gemini** - Advanced AI capabilities
+- **Claude** - Anthropic's powerful language model
+
+### 🌐 **Language Support**
+- **30+ Languages** - Major world languages supported
+- **Smart Detection** - Automatic input language recognition
+- **Flexible Input** - Support for various language name formats
+
+---
+
+## 🖼️ Screenshots
+
+<div align="center">
+
+### Main Interface
+![Main Interface](docs/images/main-interface.png)
+
+### Multi-window Mode
+![Multi-window](docs/images/multi-window.png)
+
+### Settings Panel
+![Settings](docs/images/settings.png)
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
 
 ```bash
-$ pnpm install
+# Clone the repository
+git clone https://github.com/hughedward/FloatQuickTrans.git
+cd FloatQuickTrans
+
+# Install dependencies
+pnpm install
 ```
 
 ### Development
 
 ```bash
-$ pnpm dev
+# Start development server
+pnpm dev
 ```
 
 ### Build
 
 ```bash
-# For windows
-$ pnpm build:win
+# Build for your platform
+pnpm build
 
-# For macOS
-$ pnpm build:mac
-
-# For Linux
-$ pnpm build:linux
+# Platform-specific builds
+pnpm build:mac    # macOS
+pnpm build:win    # Windows
+pnpm build:linux  # Linux
 ```
+
+---
+
+## ⚙️ Configuration
+
+### API Setup
+1. Click the **Settings** button in the app
+2. Choose your preferred AI provider
+3. Enter your API key
+4. Select default translation language
+
+### Supported Providers
+| Provider | API Key Required | Features |
+|----------|------------------|----------|
+| OpenAI | ✅ | GPT-3.5, GPT-4, GPT-4o |
+| DeepSeek | ✅ | High-quality translation |
+| Google Gemini | ✅ | Advanced AI capabilities |
+| Claude | ✅ | Anthropic's language model |
+
+---
+
+## 🎮 Usage
+
+### Basic Translation
+1. **Input Text** - Type or paste text to translate
+2. **Set Target Language** - Click language button to change
+3. **Translate** - Press `Cmd+Enter` or click translate
+4. **Listen** - Click 🔊 icon to hear pronunciation
+
+### Multi-window Workflow
+1. **Create New Window** - Press `Cmd+N` (macOS) or `Ctrl+N` (Windows)
+2. **Independent Translation** - Each window works separately
+3. **Compare Results** - Use multiple windows to compare translations
+
+### Global Hotkeys
+- `Cmd+Shift+Y` / `Ctrl+Shift+Y` - Show/hide all windows
+- `Cmd+N` / `Ctrl+N` - Create new translation window
+- `Cmd+Enter` - Execute translation
+- `ESC` - Close current window
+
+---
+
+## 🛠️ Development
+
+### Tech Stack
+- **Frontend**: React 19 + TypeScript
+- **Desktop**: Electron 35
+- **Build Tool**: Vite + electron-vite
+- **Styling**: CSS with glass morphism effects
+
+### Project Structure
+```
+src/
+├── main/           # Electron main process
+├── renderer/       # React frontend
+├── preload/        # Electron preload scripts
+└── model/          # AI providers & language maps
+```
+
+### Contributing
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with [Electron](https://electronjs.org/) and [React](https://reactjs.org/)
+- Icons from [Bootstrap Icons](https://icons.getbootstrap.com/)
+- AI providers: OpenAI, DeepSeek, Google, Anthropic
+
+---
+
+<div align="center">
+
+**Made with ❤️ for the global community**
+
+[⭐ Star this project](https://github.com/hughedward/FloatQuickTrans) • [🐛 Report Bug](https://github.com/hughedward/FloatQuickTrans/issues) • [💡 Request Feature](https://github.com/hughedward/FloatQuickTrans/issues)
+
+</div>
