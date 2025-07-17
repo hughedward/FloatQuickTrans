@@ -12,10 +12,10 @@ import { COMPLETE_TTS_LANGUAGES } from '../../model/languages/ttsLanguageMap'
 const getTTSLanguageCode = (userInput: string): string => {
   // 第一步：用户输入 → 标准语言名称
   const standardName = COMPREHENSIVE_LANGUAGES[userInput] || userInput
-  
+
   // 第二步：标准语言名称 → TTS语言代码
   const ttsCode = COMPLETE_TTS_LANGUAGES[standardName] || 'en-US'
-  
+
   console.log(`🔊 语言映射: "${userInput}" → "${standardName}" → "${ttsCode}"`)
   return ttsCode
 }
@@ -23,34 +23,34 @@ const getTTSLanguageCode = (userInput: string): string => {
 // 朗读文本函数
 const speakText = (text: string, language: string = 'en-US'): void => {
   if (!text.trim()) return
-  
+
   // 停止当前朗读
   speechSynthesis.cancel()
-  
+
   const utterance = new SpeechSynthesisUtterance(text)
   utterance.lang = language
   utterance.rate = 0.9 // 稍慢一点
   utterance.volume = 0.8
-  
+
   console.log(`🔊 开始朗读: "${text.substring(0, 50)}..." (${language})`)
-  
+
   speechSynthesis.speak(utterance)
 }
 
 // 检测文本语言（简单版本）
 const detectLanguage = (text: string): string => {
   if (!text.trim()) return 'en-US'
-  
+
   // 简单的中文检测
   if (/[\u4e00-\u9fff]/.test(text)) {
     return 'zh-CN'
   }
-  
+
   // 简单的日文检测
   if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) {
     return 'ja-JP'
   }
-  
+
   // 默认英文
   return 'en-US'
 }
@@ -132,7 +132,7 @@ function App(): React.JSX.Element {
   const [inputText, setInputText] = useState('')
   const [translatedText, setTranslatedText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  
+
   // 🔊 朗读状态
   const [isInputSpeaking, setIsInputSpeaking] = useState(false)
   const [isOutputSpeaking, setIsOutputSpeaking] = useState(false)
@@ -261,7 +261,7 @@ function App(): React.JSX.Element {
       console.warn('⚠️ 输入文本为空，无法朗读')
       return
     }
-    
+
     if (isInputSpeaking) {
       // 正在朗读，点击停止
       speechSynthesis.cancel()
@@ -271,34 +271,34 @@ function App(): React.JSX.Element {
       // 开始朗读
       const language = detectLanguage(inputText)
       setIsInputSpeaking(true)
-      
+
       const utterance = new SpeechSynthesisUtterance(inputText)
       utterance.lang = language
       utterance.rate = 0.9
       utterance.volume = 0.8
-      
+
       utterance.onend = () => {
         setIsInputSpeaking(false)
         console.log('✅ 输入文本朗读完成')
       }
-      
+
       utterance.onerror = () => {
         setIsInputSpeaking(false)
         console.error('❌ 输入文本朗读失败')
       }
-      
+
       speechSynthesis.speak(utterance)
       console.log(`🔊 开始朗读输入文本 (${language})`)
     }
   }
-  
+
   // 🔊 朗读输出文本
   const handleSpeakOutput = (): void => {
     if (!translatedText.trim()) {
       console.warn('⚠️ 翻译结果为空，无法朗读')
       return
     }
-    
+
     if (isOutputSpeaking) {
       // 正在朗读，点击停止
       speechSynthesis.cancel()
@@ -308,22 +308,22 @@ function App(): React.JSX.Element {
       // 开始朗读
       const language = getTTSLanguageCode(targetLanguage)
       setIsOutputSpeaking(true)
-      
+
       const utterance = new SpeechSynthesisUtterance(translatedText)
       utterance.lang = language
       utterance.rate = 0.9
       utterance.volume = 0.8
-      
+
       utterance.onend = () => {
         setIsOutputSpeaking(false)
         console.log('✅ 翻译结果朗读完成')
       }
-      
+
       utterance.onerror = () => {
         setIsOutputSpeaking(false)
         console.error('❌ 翻译结果朗读失败')
       }
-      
+
       speechSynthesis.speak(utterance)
       console.log(`🔊 开始朗读翻译结果 (${language})`)
     }
@@ -743,6 +743,7 @@ function App(): React.JSX.Element {
           | Cmd+Enter Translate | ESC Close | ⌘⇧Y Global Toggle
         </p>
         <p className="help-text" style={{ marginTop: '2px' }}>
+          ⌘N new window |
           <button className="help-button" onClick={() => setIsSettingsOpen(true)}>
             settings
           </button>
