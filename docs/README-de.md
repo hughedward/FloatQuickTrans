@@ -33,6 +33,23 @@
 
 ---
 
+## 🖼️ Screenshots
+
+<div align="center">
+
+### Hauptoberfläche
+<img src="imgs/image-20250717135941325.png" width="600" height="400">
+
+### Multi-Fenster-Modus
+<img src="imgs/image-20250717140200555.png" width="600" height="400">
+
+### Einstellungen
+<img src="imgs/image-20250717140318210.png" width="600" height="400">
+
+</div>
+
+---
+
 ## 🚀 Schnellstart
 
 ### Voraussetzungen

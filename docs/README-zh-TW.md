@@ -33,6 +33,23 @@
 
 ---
 
+## 🖼️ 應用截圖
+
+<div align="center">
+
+### 主界面
+<img src="imgs/image-20250717144819949.png" width="600" height="300">
+
+### 多視窗模式
+<img src="imgs/image-20250717144819949.png" width="600" height="300">
+
+### 設定面板
+<img src="imgs/image-20250717144819949.png" width="600" height="300">
+
+</div>
+
+---
+
 ## 🚀 快速開始
 
 ### 環境要求

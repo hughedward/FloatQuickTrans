@@ -33,6 +33,25 @@
 
 ---
 
+## 🖼️ Capturas de Pantalla
+
+<div align="center">
+
+### Interfaz Principal
+<img src="imgs/image-20250717140752710.png" width="600" height="400">
+
+### Modo Multi-ventana
+<img src="imgs/image-20250717140456649.png" width="600" height="400">
+
+
+
+### Panel de Configuración
+<img src="imgs/image-20250717140855155.png" width="600" height="400">
+
+</div>
+
+---
+
 ## 🚀 Inicio Rápido
 
 ### Requisitos Previos

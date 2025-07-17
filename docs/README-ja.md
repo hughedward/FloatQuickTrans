@@ -33,6 +33,31 @@
 
 ---
 
+## 🖼️ スクリーンショット
+
+<div align="center">
+### メインインターフェース
+<img src="imgs/image-20250717142153310.png" width="600" height="400">
+
+> ⌘ + Shift + Y で全てのウィンドウの表示／非表示を切り替えることができます🦄
+>
+> ⌘ + N で新しいウィンドウを開けます ✨💡
+
+<img src="imgs/image-20250717141944504.png" width="600" height="400">
+
+### マルチウィンドウモード
+<img src="imgs/image-20250717141944504.png" width="600" height="400">
+
+### 設定パネル
+
+> search https://aistudio.google.com/app/apikey to get an api key for gemini
+
+<img src="imgs/image-20250717141944504.png" width="600" height="400">
+
+</div>
+
+---
+
 ## 🚀 クイックスタート
 
 ### 前提条件

@@ -33,6 +33,26 @@
 
 ---
 
+## 🖼️ 应用截图
+
+<div align="center">
+
+### 主界面
+<img src="imgs/image-20250717150557821.png" width="600" height="400">
+
+### 多窗口模式
+<img src="imgs/image-20250717150501965.png" width="600" height="400">
+
+### 设置面板
+
+> search https://aistudio.google.com/app/apikey to get an api key for gemini
+
+<img src="imgs/image-20250717150501965.png" width="600" height="400">
+
+</div>
+
+---
+
 ## 🚀 快速开始
 
 ### 环境要求
@@ -57,6 +77,36 @@ pnpm install
 pnpm dev
 ```
 
+### 构建
+
+```bash
+# 为当前平台构建
+pnpm build
+
+# 特定平台构建
+pnpm build:mac    # macOS
+pnpm build:win    # Windows
+pnpm build:linux  # Linux
+```
+
+---
+
+## ⚙️ 配置
+
+### API设置
+1. 点击应用中的**设置**按钮
+2. 选择您偏好的AI提供商
+3. 输入您的API密钥
+4. 选择默认翻译语言
+
+### 支持的提供商
+| 提供商 | 需要API密钥 | 功能 |
+|----------|------------------|----------|
+| OpenAI | ✅ | GPT-3.5, GPT-4, GPT-4o |
+| DeepSeek | ✅ | 高质量翻译 |
+| Google Gemini | ✅ | 先进的AI能力 |
+| Claude | ✅ | Anthropic的语言模型 |
+
 ---
 
 ## 🎮 使用方法
@@ -72,6 +122,37 @@ pnpm dev
 2. **独立翻译** - 每个窗口独立工作
 3. **对比结果** - 使用多个窗口对比翻译结果
 
+### 全局热键
+- `Cmd+Shift+Y` / `Ctrl+Shift+Y` - 显示/隐藏所有窗口
+- `Cmd+N` / `Ctrl+N` - 创建新翻译窗口
+- `Cmd+Enter` - 执行翻译
+- `ESC` - 关闭当前窗口
+
+---
+
+## 🛠️ 开发
+
+### 技术栈
+- **前端**: React 19 + TypeScript
+- **桌面**: Electron 35
+- **构建工具**: Vite + electron-vite
+- **样式**: CSS 玻璃态效果
+
+### 项目结构
+```
+src/
+├── main/           # Electron 主进程
+├── renderer/       # React 前端
+├── preload/        # Electron 预加载脚本
+└── model/          # AI提供商 & 语言映射
+```
+
+---
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](../LICENSE) 文件了解详情。
+
 ---
 
 <div align="center">
@@ -81,5 +162,3 @@ pnpm dev
 [⭐ 给项目点星](https://github.com/hughedward/FloatQuickTrans) • [🐛 报告问题](https://github.com/hughedward/FloatQuickTrans/issues) • [💡 功能建议](https://github.com/hughedward/FloatQuickTrans/issues)
 
 </div>
-
-[![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)

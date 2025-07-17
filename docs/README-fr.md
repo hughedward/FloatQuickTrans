@@ -33,6 +33,23 @@
 
 ---
 
+## 🖼️ Captures d'écran
+
+<div align="center">
+
+### Interface Principale
+<img src="imgs/image-20250717141516682.png" width="600" height="400">
+
+### Mode Multi-fenêtres
+<img src="imgs/image-20250717141626130.png" width="600" height="400">
+
+### Panneau de Configuration
+<img src="imgs/image-20250717141626130.png" width="600" height="400">
+
+</div>
+
+---
+
 ## 🚀 Démarrage Rapide
 
 ### Prérequis

@@ -41,20 +41,25 @@
 ## 🖼️ Screenshots
 
 <div align="center">
-
 ### Main Interface
-<img src="imgs/image-20250717120434391.png" width="600" height="400">
+
+<img src="imgs/image-20250717151804217.png" width="400" height="250">
+
+<img src="imgs/image-20250717120434391.png" width="400" height="250">
 
 ### Multi-window Mode
 
-<img src="imgs/image-20250717120315825.png" width="600" height="400">
+<img src="imgs/image-20250717120315825.png" width="600" height="300">
+
+<img src="imgs/image-202507171407527101.png" width="600" height="300">
 
 
 
 ### Settings Panel
 
+> **Go** https://aistudio.google.com/app/apikey  🧚‍♀️
 
-<img src="imgs/image-20250717120503183.png" width="600" height="400">
+<img src="imgs/image-20250717120503183.png" width="400" height="200">
 
 </div>
 
@@ -109,10 +114,10 @@ pnpm build:linux  # Linux
 ### Supported Providers
 | Provider | API Key Required | Features |
 |----------|------------------|----------|
-| OpenAI | ✅ | GPT-3.5, GPT-4, GPT-4o |
+| OpenAI | TODO | GPT-3.5, GPT-4, GPT-4o |
 | DeepSeek | ✅ | High-quality translation |
 | Google Gemini | ✅ | Advanced AI capabilities |
-| Claude | ✅ | Anthropic's language model |
+| Claude | TODO | Anthropic's language model |
 
 ---
 
