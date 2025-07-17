@@ -6,7 +6,8 @@ import {
   Tray,
   Menu,
   nativeImage,
-  globalShortcut
+  globalShortcut,
+  dialog
 } from 'electron'
 import { join } from 'path'
 import { existsSync } from 'fs'
@@ -52,7 +53,7 @@ class WindowManager {
     // 窗口设置
     window.setAlwaysOnTop(true, 'floating')
     window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-    
+
     if (process.platform === 'darwin') {
       window.setWindowButtonVisibility(false)
     }
@@ -165,19 +166,35 @@ function createTray(): void {
     tray = new Tray(trayIcon)
 
     // 设置托盘提示文本
-    const shortcutText = process.platform === 'darwin' ? '⌘⇧Y 或 ⌥Space' : 'Ctrl+Shift+Y'
-    tray.setToolTip(`FloatQuickTrans - 单击：显示/隐藏窗口，快捷键：${shortcutText}，右键：菜单`)
+    const shortcutText = process.platform === 'darwin' ? '⌘⇧Y or ⌥Space' : 'Ctrl+Shift+Y'
+    tray.setToolTip(`FloatQuickTrans - Click: Show/Hide, Shortcut: ${shortcutText}, Right-click: Menu`)
 
     // 创建托盘右键菜单
     const contextMenu = Menu.buildFromTemplate([
       {
-        label: '关于 FloatQuickTrans',
+        label: 'About FloatQuickTrans',
         click: () => {
-          shell.openExternal('https://github.com/yourusername/electron-quick-trans-github')
+          shell.openExternal('https://github.com/hughedward/FloatQuickTrans')
         }
       },
       {
-        label: '退出',
+        label: 'Version Info',
+        click: () => {
+          const version = app.getVersion()
+          dialog.showMessageBox({
+            type: 'info',
+            title: 'About FloatQuickTrans',
+            message: 'FloatQuickTrans',
+            detail: `Version: ${version}\nAuthor: Hugh Edward\nHomepage: https://github.com/hughedward/FloatQuickTrans\n\nProfessional Floating AI Translation Tool\nReal-time streaming translation • Multi-window support • Text-to-speech • Always on top`,
+            buttons: ['OK']
+          })
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Quit',
         click: () => {
           app.quit()
         }
@@ -214,13 +231,13 @@ function showAllWindows(): void {
       window.restore()
     }
     window.show()
-    
+
     // 确保超级悬浮设置
     if (isAlwaysOnTop) {
       window.setAlwaysOnTop(true, 'floating')
     }
   })
-  
+
   // 聚焦第一个窗口
   const firstWindow = windowManager.getFirstWindow()
   if (firstWindow) {
@@ -267,13 +284,29 @@ function updateTrayMenu(): void {
   if (tray) {
     const contextMenu = Menu.buildFromTemplate([
       {
-        label: '关于 FloatQuickTrans',
+        label: 'About FloatQuickTrans',
         click: () => {
           shell.openExternal('https://github.com/hughedward/FloatQuickTrans')
         }
       },
       {
-        label: '退出',
+        label: 'Version Info',
+        click: () => {
+          const version = app.getVersion()
+          dialog.showMessageBox({
+            type: 'info',
+            title: 'About FloatQuickTrans',
+            message: 'FloatQuickTrans',
+            detail: `Version: ${version}\nAuthor: Hugh Edward\nHomepage: https://github.com/hughedward/FloatQuickTrans\n\nProfessional Floating AI Translation Tool\nReal-time streaming translation • Multi-window support • Text-to-speech • Always on top`,
+            buttons: ['OK']
+          })
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Quit',
         click: () => {
           app.quit()
         }
@@ -308,7 +341,7 @@ function registerGlobalShortcuts(): void {
 
     // ⌘ + N / Ctrl + N - 新建窗口
     const newWindowShortcut = process.platform === 'darwin' ? 'Command+N' : 'Ctrl+N'
-    
+
     const newWindowRegistered = globalShortcut.register(newWindowShortcut, () => {
       console.log('🎯 新建窗口快捷键触发:', newWindowShortcut)
       createWindow()
