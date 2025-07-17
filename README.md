@@ -58,7 +58,7 @@
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - pnpm (recommended) or npm
 
 ### Installation
@@ -179,3 +179,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [⭐ Star this project](https://github.com/hughedward/FloatQuickTrans) • [🐛 Report Bug](https://github.com/hughedward/FloatQuickTrans/issues) • [💡 Request Feature](https://github.com/hughedward/FloatQuickTrans/issues)
 
 </div>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)
