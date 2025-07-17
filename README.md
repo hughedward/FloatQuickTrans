@@ -43,14 +43,18 @@
 <div align="center">
 
 ### Main Interface
-<img src="imgs/image-20250717120434391.png" alt="image-20250717120434391" style="zoom:33%;" />
+<img src="imgs/image-20250717120434391.png" width="300" height="200">
 
 ### Multi-window Mode
 
-<img src="imgs/image-20250717120315825.png" alt="image-20250717120315825" style="zoom:23%;" />
+<img src="imgs/image-20250717120315825.png" width="300" height="200">
+
+
 
 ### Settings Panel
-<img src="imgs/image-20250717120503183.png" alt="image-20250717120503183" style="zoom:35%;" />
+
+
+<img src="imgs/image-20250717120503183.png" width="300" height="200">
 
 </div>
 
