@@ -40,8 +40,6 @@
 
 ## 🖼️ Screenshots
 
-<div align="center">
-
 ### Main Interface
 Floating window stays above all applications
 <img src="imgs/image-20250717151804217.png" width="400" height="250">
@@ -61,8 +59,6 @@ Floating window stays above all applications
 > **Go** https://aistudio.google.com/app/apikey  🧚‍♀️
 
  <img src="imgs/image-20250717120503183.png" width="400" height="200">
-
-</div>
 
 ---
 
