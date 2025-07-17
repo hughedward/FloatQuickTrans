@@ -56,7 +56,7 @@
 ## 🚀 快速开始
 
 ### 环境要求
-- Node.js 18+ 
+- Node.js 18+
 - pnpm（推荐）或 npm
 
 ### 安装
@@ -162,3 +162,6 @@ src/
 [⭐ 给项目点星](https://github.com/hughedward/FloatQuickTrans) • [🐛 报告问题](https://github.com/hughedward/FloatQuickTrans/issues) • [💡 功能建议](https://github.com/hughedward/FloatQuickTrans/issues)
 
 </div>
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)
