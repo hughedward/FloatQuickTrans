@@ -10,7 +10,7 @@
 [![Платформа](https://img.shields.io/badge/платформа-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/hughedward/FloatQuickTrans)
 [![Лицензия](https://img.shields.io/badge/лицензия-MIT-green.svg)](../LICENSE)
 
-[English](../README.md) • [中文](README-zh.md) • [日本語](README-ja.md) • [Français](README-fr.md) • [Deutsch](README-de.md) • [Español](README-es.md) • [한국어](README-ko.md) • [Русский](README-ru.md)
+[English](../README.md) • [简体中文](README-zh.md) • [繁體中文](README-zh-TW.md) • [日本語](README-ja.md) • [Français](README-fr.md) • [Deutsch](README-de.md) • [Español](README-es.md) • [한국어](README-ko.md) • [Русский](README-ru.md)
 
 </div>
 
@@ -36,7 +36,7 @@
 ## 🚀 Быстрый старт
 
 ### Требования
-- Node.js 18+ 
+- Node.js 18+
 - pnpm (рекомендуется) или npm
 
 ### Установка
@@ -81,3 +81,7 @@ pnpm dev
 [⭐ Отметить проект звездой](https://github.com/hughedward/FloatQuickTrans) • [🐛 Сообщить об ошибке](https://github.com/hughedward/FloatQuickTrans/issues) • [💡 Запросить функцию](https://github.com/hughedward/FloatQuickTrans/issues)
 
 </div>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)

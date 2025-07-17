@@ -10,7 +10,7 @@
 [![플랫폼](https://img.shields.io/badge/플랫폼-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/hughedward/FloatQuickTrans)
 [![라이선스](https://img.shields.io/badge/라이선스-MIT-green.svg)](../LICENSE)
 
-[English](../README.md) • [中文](README-zh.md) • [日本語](README-ja.md) • [Français](README-fr.md) • [Deutsch](README-de.md) • [Español](README-es.md) • [한국어](README-ko.md) • [Русский](README-ru.md)
+[English](../README.md) • [简体中文](README-zh.md) • [繁體中文](README-zh-TW.md) • [日本語](README-ja.md) • [Français](README-fr.md) • [Deutsch](README-de.md) • [Español](README-es.md) • [한국어](README-ko.md) • [Русский](README-ru.md)
 
 </div>
 
@@ -36,7 +36,7 @@
 ## 🚀 빠른 시작
 
 ### 필수 조건
-- Node.js 18+ 
+- Node.js 18+
 - pnpm (권장) 또는 npm
 
 ### 설치
@@ -81,3 +81,7 @@ pnpm dev
 [⭐ 이 프로젝트에 별표 주기](https://github.com/hughedward/FloatQuickTrans) • [🐛 버그 신고](https://github.com/hughedward/FloatQuickTrans/issues) • [💡 기능 요청](https://github.com/hughedward/FloatQuickTrans/issues)
 
 </div>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)
