@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: electron-quick-trans
+productName: float-quick-trans
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: electron-quick-trans
+  executableName: float-quick-trans
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
