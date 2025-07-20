@@ -14,6 +14,7 @@ import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import '../model/proxy'
+import path from 'path'
 // 窗口管理器
 class WindowManager {
   private windows: Set<BrowserWindow> = new Set()
@@ -487,6 +488,10 @@ ipcMain.handle('resize-window-height', (event, targetHeight: number, duration: n
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  // 如果是便携版，设置用户数据存储路径
+  if (process.env.PORTABLE_EXECUTABLE_DIR) {
+    app.setPath('userData', path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'user-data'))
+  }
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron.quick-trans')
 

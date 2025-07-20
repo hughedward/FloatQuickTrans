@@ -38,7 +38,7 @@ interface ModelConfig {
 
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
   const { currentProvider, setCurrentProvider } = useProvider()
-  
+
   // 🎯 优化：分离输入状态和保存状态，减少重渲染
   const [inputValues, setInputValues] = useState<Record<string, string>>({})
   const [models, setModels] = useState<ModelConfig[]>([
@@ -90,7 +90,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
   useEffect(() => {
     if (debouncedInputValues && Object.keys(inputValues).length > 0) {
       const parsedValues = JSON.parse(debouncedInputValues)
-      
+
       // 更新 models 状态
       setModels(prev => prev.map(model => ({
         ...model,
@@ -99,7 +99,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
 
       // 保存到 localStorage
       setAutoSaveStatus('Auto-saving...')
-      
+
       try {
         const savedSettings = localStorage.getItem('quick-trans-api-settings')
         if (savedSettings) {
@@ -110,7 +110,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
           }))
           localStorage.setItem('quick-trans-api-settings', JSON.stringify(updatedSettings))
         }
-        
+
         setAutoSaveStatus('Saved')
         setTimeout(() => setAutoSaveStatus(''), 2000)
       } catch (error) {
@@ -146,14 +146,14 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings)
         setModels(parsedSettings)
-        
+
         // 🎯 初始化输入值状态
         const initialInputValues: Record<string, string> = {}
         parsedSettings.forEach((setting: any) => {
           initialInputValues[setting.provider] = setting.apiKey || ''
         })
         setInputValues(initialInputValues)
-        
+
         console.log('✅ Loaded saved API settings:', parsedSettings)
       } else {
         // 如果没有保存的设置，保存当前的初始设置
@@ -219,18 +219,18 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
 
   const handleTestConnection = useCallback(async (provider: string): Promise<void> => {
     console.log('🔍 Testing connection for provider:', provider)
-    
+
     // 🎯 防止重复测试
     if (testingRef.current.has(provider)) {
       console.log('⚠️ Test already in progress for', provider)
       return
     }
-    
+
     // 🔍 获取当前 API key（优先从输入状态获取）
     const currentApiKey = inputValues[provider] || models.find(m => m.provider === provider)?.apiKey || ''
-    
+
     console.log('🔑 Current API key:', currentApiKey ? `${currentApiKey.substring(0, 8)}...` : 'EMPTY')
-    
+
     if (!currentApiKey || currentApiKey.trim() === '') {
       console.warn('⚠️ No API key provided for', provider)
       setModels((prev) =>
@@ -242,7 +242,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       )
       return
     }
-    
+
     // 🔄 设置测试状态
     testingRef.current.add(provider)
     setModels((prev) =>
@@ -251,23 +251,23 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
 
     try {
       console.log('🚀 Starting connection test for', provider)
-      
+
       // 🔑 先更新localStorage中的API key，确保testAIConnection能获取到最新值
       const savedSettings = localStorage.getItem('quick-trans-api-settings')
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings)
-        const updatedSettings = parsedSettings.map((config: any) => 
-          config.provider === provider 
+        const updatedSettings = parsedSettings.map((config: any) =>
+          config.provider === provider
             ? { ...config, apiKey: currentApiKey }
             : config
         )
         localStorage.setItem('quick-trans-api-settings', JSON.stringify(updatedSettings))
         console.log('🔑 Updated API key in localStorage for testing')
       }
-      
+
       const isConnected = await testAIConnection(provider as AIProvider)
       console.log('🔍 Connection test result for', provider, ':', isConnected)
-      
+
       setModels((prev) =>
         prev.map((model) =>
           model.provider === provider
@@ -316,7 +316,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
       const apiKey = inputValues[model.provider] || model.apiKey
       return apiKey && apiKey.trim() !== ''
     })
-    
+
     if (modelsWithApiKey.length === 0) {
       setActionFeedback('No API keys configured')
       setIsTestingAll(false)
@@ -335,7 +335,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
           await new Promise(resolve => setTimeout(resolve, 200))
         }
       }
-      
+
       // 🔍 等待状态更新后计算结果
       setTimeout(() => {
         const currentModels = models.filter((m) => {
@@ -344,11 +344,11 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
         })
         const connectedCount = currentModels.filter((m) => m.status === 'connected').length
         const totalCount = currentModels.length
-        
+
         console.log('📊 Test results:', connectedCount, '/', totalCount, 'connected')
         setActionFeedback(`Complete: ${connectedCount}/${totalCount} connected`)
       }, 500)
-      
+
     } catch (error) {
       console.error('❌ Test all failed:', error)
       setActionFeedback('Some tests failed')
@@ -362,8 +362,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
   const displayModels = useMemo(() => {
     return models.map(model => ({
       ...model,
-      displayApiKey: inputValues[model.provider] !== undefined 
-        ? inputValues[model.provider] 
+      displayApiKey: inputValues[model.provider] !== undefined
+        ? inputValues[model.provider]
         : model.apiKey
     }))
   }, [models, inputValues])
@@ -390,10 +390,10 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose 
               onChange={(e) => setCurrentProvider(e.target.value as any)}
               className="provider-select"
             >
-              <option value="deepseek">DeepSeek</option>
-              <option value="openai">OpenAI</option>
-              <option value="gemini">Gemini</option>
-              <option value="claude">Claude</option>
+               <option value="deepseek">DeepSeek</option>
+               <option value="openai" disabled>OpenAI (敬请期待)</option>
+               <option value="gemini">Gemini</option>
+               <option value="claude" disabled>Claude (敬请期待)</option>
             </select>
           </div>
 
