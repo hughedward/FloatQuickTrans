@@ -486,7 +486,7 @@ function App(): React.JSX.Element {
 
   // ESC 键关闭窗口, Enter 翻译
   const handleKeyDown = (e: React.KeyboardEvent): void => {
-    if (e.metaKey && e.key === 'Enter') {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       // Cmd+Enter触发翻译
       e.preventDefault()
       console.log('⌨️ Cmd+Enter pressed, triggering translation')

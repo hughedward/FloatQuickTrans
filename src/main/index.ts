@@ -33,7 +33,10 @@ class WindowManager {
       skipTaskbar: false,
       resizable: false,
       frame: false,
-      transparent: true,
+      transparent: false,
+      //透明度
+      opacity: 0.9,
+      backgroundColor: '#00000000',
       visualEffectState: 'active',
       titleBarStyle: 'hidden',
       fullscreenable: false,
