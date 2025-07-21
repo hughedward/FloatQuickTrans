@@ -5,7 +5,6 @@ out
 .eslintcache
 *.log*
 .doc
-build/
 create-tray-icon.html
 .idea/
 dist dist-202507211920
