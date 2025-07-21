@@ -12,9 +12,12 @@ import {
 import { join } from 'path'
 import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/output.ico?asset'
 import '../model/proxy'
 import path from 'path'
+
+const iconPath = join(__dirname, '../../resources/output.ico');
+
+
 // 窗口管理器
 class WindowManager {
   private windows: Set<BrowserWindow> = new Set()
@@ -45,7 +48,7 @@ class WindowManager {
       closable: true,
       acceptFirstMouse: true,
       movable: true,
-      ...(process.platform === 'linux' ? { icon } : {}),
+      icon:iconPath,
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
         sandbox: false,
