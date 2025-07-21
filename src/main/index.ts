@@ -33,7 +33,7 @@ class WindowManager {
       skipTaskbar: false,
       resizable: false,
       frame: false,
-      transparent: false,
+      transparent: true,
       //透明度
       opacity: 0.9,
       backgroundColor: '#00000000',
