@@ -38,7 +38,7 @@ class WindowManager {
       opacity: 0.9,
       backgroundColor: '#00000000',
       visualEffectState: 'active',
-      titleBarStyle: 'hidden',
+      titleBarStyle: 'hidden', // 隐藏标题栏
       fullscreenable: false,
       maximizable: false,
       minimizable: false,
@@ -71,6 +71,14 @@ class WindowManager {
 
     window.on('blur', () => {
       window.setAlwaysOnTop(true, 'floating')
+      if (process.platform === 'win32') {
+        window.setBackgroundColor('#00000000')
+      }
+    })
+    window.on('focus', () => {
+      if (process.platform === 'win32') {
+        window.setBackgroundColor('#00000000')
+      }
     })
 
     window.on('close', (event) => {
