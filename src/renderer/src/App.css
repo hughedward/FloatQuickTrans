@@ -64,6 +64,8 @@ body {
   flex-direction: column;
   position: relative;
   -webkit-app-region: drag; /* 整个容器可拖拽 */
+  backdrop-filter: blur(5px); /* 背景模糊效果 */
+  background-color: #a7b8c0d0;
 }
 
 /* 🔍 连接状态指示器 */
