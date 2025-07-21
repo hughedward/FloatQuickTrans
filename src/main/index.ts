@@ -12,7 +12,7 @@ import {
 import { join } from 'path'
 import { existsSync } from 'fs'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/output.ico?asset'
 import '../model/proxy'
 import path from 'path'
 // 窗口管理器
