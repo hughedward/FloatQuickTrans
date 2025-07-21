@@ -349,6 +349,15 @@ function App(): React.JSX.Element {
     }
   }
 
+  useEffect(() => {
+    // 只在 Windows 下加 class
+    if (navigator.userAgent.includes('Windows')) {
+      document.body.classList.add('is-windows');
+    } else {
+      document.body.classList.remove('is-windows');
+    }
+  }, []);
+
   // 🎯 组件挂载时确保窗口大小正确并测试连接
   useEffect(() => {
     setTimeout(() => {
