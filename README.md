@@ -2,7 +2,7 @@
 
 # 🌍 FloatQuickTrans🎉
 
-**A Professional Floating AI Translation Tool** 
+**A Professional Floating AI Translation Tool**
 
 *Real-time streaming translation • Multi-window support • Text-to-speech • Always on top*
 
@@ -10,7 +10,7 @@
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/hughedward/FloatQuickTrans)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-[English](README.md) • [简体中文](docs/README-zh.md) • [繁體中文](docs/README-zh-TW.md) • [日本語](docs/README-ja.md) • [Français](docs/README-fr.md) • [Deutsch](docs/README-de.md) • [Español](docs/README-es.md) • [한국어](docs/README-ko.md) • [Русский](docs/README-ru.md)
+[English](README.md) • [简体中文](docs/README-zh.md) • [繁體中文](docs/README-zh-TW.md) • [日本語](docs/README-ja.md) • [Français](docs/README-fr.md) • [Deutsch](docs/README-de.md) • [Español](docs/README-es.md) • [한국어](docs/README-ko.md) • [Русский](docs/README-ru.md) • [Türkçe](docs/README-tr.md)
 
 </div>
 
