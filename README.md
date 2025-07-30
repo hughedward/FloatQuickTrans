@@ -209,10 +209,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)
 
 > thanks `https://www.star-history.com/#hughedward/FloatQuickTrans&Date`
-> <img width="901" height="570" alt="image" src="https://github.com/user-attachments/assets/79a4f463-ab08-40b4-84c2-4f6116d11dc4" />
-> <img width="230" height="280" alt="image" src="https://github.com/user-attachments/assets/fed12b34-16f4-4488-abf3-c06aa968604c" />
 >
-> [![Support me with stripe](https://img.shields.io/badge/❤️click to Sponsor🫰-Stripe-blue?logo=stripe)](https://buy.stripe.com/00w00k3eQ3FZ9JtbMvbjW00) 🥤
+> <img width="901" height="570" alt="image" src="https://github.com/user-attachments/assets/79a4f463-ab08-40b4-84c2-4f6116d11dc4" />
+>
+> **If you find my work helpful, I’d be truly grateful if you’d consider sponsoring me.**
+>
+>  <img width="230" height="280" alt="image" src="https://github.com/user-attachments/assets/fed12b34-16f4-4488-abf3-c06aa968604c" />
+>
+> <a href="https://buy.stripe.com/cNi9AU02E0tN2h1dUDbjW01">
+> <img src="./imgs/sponsor-stripe02.png" alt="Sponsor me" width="180" height="60">
+> </a>
 >
 > <img width="121" height="119" alt="image" src="https://github.com/user-attachments/assets/1b4d46bc-f434-4dce-a594-c2261c0db0cf" />
 > Your support is the driving force behind my creations.🎉
