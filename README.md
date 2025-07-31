@@ -216,8 +216,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 >
 > **If you find my work helpful, I’d be truly grateful if you’d consider sponsoring me.**
 >
->  <img width="230" height="280" alt="image" src="https://github.com/user-attachments/assets/fed12b34-16f4-4488-abf3-c06aa968604c" />
->  <img width="230" height="280" alt="image" src="./imgs/image-wechat-z.png" />
+> <img width="230" height="280" alt="image" src="https://github.com/user-attachments/assets/fed12b34-16f4-4488-abf3-c06aa968604c" />
+> <img width="230" height="280" alt="image" src="./imgs/image-wechat-z.png" />
+>
+> Or Use Stripe
+>
 > <a href="https://buy.stripe.com/cNi9AU02E0tN2h1dUDbjW01">
 > <img src="./imgs/sponsor-stripe02.png" alt="Sponsor me" width="180" height="60">
 > </a>
