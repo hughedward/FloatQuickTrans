@@ -188,6 +188,38 @@ Bu proje MIT Lisansı altında lisanslanmıştır - detaylar için [LICENSE](LIC
 
 ---
 
+# 🛠️ Geliştirme
+
+### Teknoloji Yığını
+- **Önyüz**: React 19 + TypeScript
+- **Masaüstü**: Electron 35
+- **Derleme Aracı**: Vite + electron-vite
+- **Stil**: CSS cam efekti
+
+### Proje Yapısı
+```
+src/
+├── main/           # Electron ana işlem
+├── renderer/       # React önyüz
+├── preload/        # Electron önyükleme betiği
+└── model/          # AI sağlayıcılar & dil eşleme
+```
+
+### 🫰 Katkıda Bulunma
+Topluluk katkılarını memnuniyetle karşılıyoruz! Katkıda bulunmak isterseniz lütfen aşağıdaki adımları izleyin:
+1.  Bu depoyu çatallayın (fork)
+2.  Bir özellik dalı oluşturun (`git checkout -b feature/etkileyici-özellik` / `git checkout -b bugfix/xxx-sorununu-düzelt`)
+3.  Değişiklikleri kaydedin (`git commit -m 'Etkileyici özellik eklendi'` / `git commit -m 'xxx sorunu düzeltildi: xxxx'`). Değişikliklerden sonra açıklayıcı mesajlar/kısaltmalar kullanarak commit yapın, kod içinde mümkün olduğunca açıklayıcı yorumlar ekleyin.
+4.  Dalınıza gönderin (`git push origin feature/etkileyici-özellik` / `git push origin bugfix/xxx-sorununu-düzelt`). Lütfen kodun temiz tutulmasına özen gösterin.
+5.  Bir çekme isteği (pull request) açın. Her seferinde tek bir özellik veya düzeltmeye odaklanmanızı öneririz, aynı anda çok fazla değişiklik göndermekten kaçının.
+6.  PR'nizi inceleyip hazır olduğunda birleştireceğiz. Diğer PR'leri incelemeye yardımcı olmak isterseniz de minnettar kalırız!
+7.  Anlayış ve iletişimi kolaylaştırmak için, soru gönderme ve çekme isteği gibi işlemlerde İngilizce kullanılması önerilir.
+---
+
+## 📄 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır - detaylar için [LİSANS](../LICENSE) dosyasına bakın.
+
 <div align="center">
 
 **Küresel topluluk için ❤️ ile yapıldı**

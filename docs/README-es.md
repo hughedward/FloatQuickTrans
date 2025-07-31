@@ -93,6 +93,39 @@ pnpm dev
 
 ---
 
+# 🛠️ Desarrollo
+
+### Tecnologías utilizadas
+- **Frontend**: React 19 + TypeScript
+- **Escritorio**: Electron 35
+- **Herramientas de construcción**: Vite + electron-vite
+- **Estilos**: Efectos de cristal con CSS
+
+### Estructura del proyecto
+```
+src/
+├── main/           # Proceso principal de Electron
+├── renderer/       # Frontend en React
+├── preload/        # Scripts de precarga de Electron
+└── model/          # Proveedores de IA & mapeo de idiomas
+```
+
+### 🫰 Contribuciones
+¡Agradecemos las contribuciones de la comunidad! Si deseas contribuir, sigue estos pasos:
+1. Haz un fork de este repositorio
+2. Crea una rama de características (`git checkout -b feature/funcion-impresionante`/`git checkout -b bugfix/correccion-problema-xxx`)
+3. Realiza tus cambios (`git commit -m 'Añadir funcion impresionante'`/`git commit -m 'Corregir problema xxx: xxxx'`). Por favor, utiliza mensajes descriptivos/abreviados al hacer commit y añade comentarios en el código cuando sea posible.
+4. Sube los cambios a la rama (`git push origin feature/funcion-impresionante`/`git push origin bugfix/correccion-problema-xxx`). Mantén el código limpio y ordenado.
+5. Abre una solicitud de extracción (Pull Request). Se recomienda enfocarse en una sola funcionalidad o corrección por PR, evitando cambios masivos.
+6. Revisaremos tu PR y lo fusionaremos cuando esté listo. ¡También agradecemos si deseas ayudar revisando otros PRs!
+7. Para facilitar la comprensión y la comunicación, se recomienda utilizar el inglés al enviar preguntas, solicitudes de extracción y realizar otras operaciones.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia MIT - consulta el archivo [LICENSE](../LICENSE) para más detalles.
+
 <div align="center">
 
 **Hecho con ❤️ para la comunidad global**

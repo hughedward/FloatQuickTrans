@@ -91,6 +91,39 @@ pnpm dev
 
 ---
 
+# 🛠️ 開發
+
+### 技術棧
+- **前端**: React 19 + TypeScript
+- **桌面**: Electron 35
+- **建構工具**: Vite + electron-vite
+- **樣式**: CSS 玻璃態效果
+
+### 專案結構
+```
+src/
+├── main/           # Electron 主進程
+├── renderer/       # React 前端
+├── preload/        # Electron 預載腳本
+└── model/          # AI提供商 & 語言映射
+```
+
+### 🫰參與貢獻
+我們歡迎社區貢獻！若您想參與貢獻，請按以下步驟操作：
+1.  Fork本代碼庫
+2.  創建特性分支（`git checkout -b feature/驚艷功能`/`git checkout -b bugfix/修復-xxx問題`）
+3.  提交更改（`git commit -m '新增驚艷功能'`/`git commit -m '修復xxx問題:xxxx'`）。修改後請用描述性信息/簡寫提交，代碼中請盡可能添加註釋說明。
+4.  推送至分支（`git push origin feature/驚艷功能`/`git push origin bugfix/修復-xxx問題`）。請保持代碼整潔。
+5.  發起拉取請求。建議每次專注於單個功能或修復，避免一次性提交過多改動。
+6.  我們將審核您的PR並在準備就緒後合併。若您願意協助審核其他PR，我們也將不勝感激！
+7.  為了方便理解和溝通，建議在提交問題和拉取請求等操作時使用英語。
+
+---
+
+## 📄 許可證
+
+本專案採用 MIT 許可證 - 查看 [LICENSE](../LICENSE) 文件了解詳情。
+
 <div align="center">
 
 **用 ❤️ 為全球社群製作**

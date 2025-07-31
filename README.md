@@ -173,12 +173,14 @@ src/
 └── model/          # AI providers & language maps
 ```
 
-### Contributing
+### 🫰Contributing
+We welcome contributions from the community! If you'd like to contribute, please follow these steps:
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create your feature branch (`git checkout -b feature/amazing-feature`/`git checkout -b bugfix/fix-xxx`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`/`git commit -m 'Fix xxx bug:xxxx'`).Make your changes and commit them with descriptive messages/shotcuts.Please write comments in the code as much as possible.
+4. Push to the branch (`git push origin feature/amazing-feature`/`git push origin bugfix/fix-xxx`).Please keep the code clean.
+5. Open a Pull Request. Submit a pull request.It is recommended to focus on a single feature or fix, avoiding making too many changes at once.
+6. We'll review your PR and merge it once it's ready. We'll also appreciate it if you're willing to help review other PRs as well!
 
 ---
 

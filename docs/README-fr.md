@@ -90,6 +90,39 @@ pnpm dev
 3. **Comparer les Résultats** - Utilisez plusieurs fenêtres pour comparer les traductions
 
 ---
+# 🛠️ Développement
+
+### Stack technique
+- **Frontend**: React 19 + TypeScript
+- **Desktop**: Electron 35
+- **Outils de build**: Vite + electron-vite
+- **Styles**: Effet verre (Glassmorphism) en CSS
+
+### Structure du projet
+```
+src/
+├── main/           # Processus principal Electron
+├── renderer/       # Frontend React
+├── preload/        # Scripts de préchargement Electron
+└── model/          # Fournisseurs d'IA & mappings linguistiques
+```
+
+### 🫰 Contribuer
+Nous accueillons les contributions de la communauté ! Si vous souhaitez contribuer, voici les étapes à suivre :
+1.  Forkez ce dépôt
+2.  Créez une branche de fonctionnalité (`git checkout -b feature/fonctionnalité-impressionnante`/`git checkout -b bugfix/correction-problème-xxx`)
+3.  Committez vos modifications (`git commit -m 'Ajout d'une fonctionnalité impressionnante'`/`git commit -m 'Correction du problème xxx: xxxx'`). Veuillez utiliser des messages descriptifs/concise pour vos commits et ajouter des commentaires explicatifs dans le code si possible.
+4.  Poussez vers la branche (`git push origin feature/fonctionnalité-impressionnante`/`git push origin bugfix/correction-problème-xxx`). Maintenez votre code propre.
+5.  Ouvrez une Pull Request. Nous recommandons de se concentrer sur une seule fonctionnalité ou correction à la fois, évitez de soumettre trop de modifications en une seule fois.
+6.  Nous examinerons votre PR et la fusionnerons une fois prête. Si vous souhaitez aider à examiner d'autres PR, nous vous en serions très reconnaissants !
+7.  Pour faciliter la compréhension et la communication, il est recommandé d'utiliser l'anglais lors de la soumission de questions, de demandes de pull et d'autres opérations.
+
+---
+
+## 📄 Licence
+
+Ce projet est sous licence MIT - voir le fichier [LICENSE](../LICENSE) pour plus de détails.
+
 
 <div align="center">
 

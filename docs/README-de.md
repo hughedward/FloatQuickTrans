@@ -90,6 +90,35 @@ pnpm dev
 3. **Ergebnisse vergleichen** - Verwenden Sie mehrere Fenster, um Übersetzungen zu vergleichen
 
 ---
+### Technologie-Stack
+- **Frontend**: React 19 + TypeScript
+- **Desktop**: Electron 35
+- **Build-Tools**: Vite + electron-vite
+- **Styling**: CSS Glassmorphism-Effekte
+
+### Projektstruktur
+```
+src/
+├── main/           # Electron-Hauptprozess
+├── renderer/       # React-Frontend
+├── preload/        # Electron-Preload-Skripte
+└── model/          # AI-Anbieter & Sprachzuordnung
+```
+
+### 🫰 Mitwirken
+Wir freuen uns über Community-Beiträge! So können Sie mitmachen:
+1.  Forken Sie dieses Repository
+2.  Erstellen Sie einen Feature-Branch (`git checkout -b feature/tolle-funktion`/`git checkout -b bugfix/behebe-xxx-problem`)
+3.  Committen Sie Ihre Änderungen (`git commit -m 'Füge tolle Funktion hinzu'`/`git commit -m 'Behebe xxx-Problem: xxxx'`). Bitte verwenden Sie beschreibende Nachrichten/Kürzel und fügen Sie nach Möglichkeit Code-Kommentare hinzu.
+4.  Pushen Sie zum Branch (`git push origin feature/tolle-funktion`/`git push origin bugfix/behebe-xxx-problem`). Halten Sie den Code sauber.
+5.  Erstellen Sie einen Pull Request. Konzentrieren Sie sich pro PR auf ein Feature oder einen Fix, um umfangreiche Änderungen zu vermeiden.
+6.  Wir prüfen Ihren PR und mergen ihn, sobald er bereit ist. Unterstützung bei der Review anderer PRs ist ebenfalls willkommen!
+7.  Um das Verständnis und die Kommunikation zu erleichtern, wird empfohlen, Englisch bei der Einreichung von Fragen, Pull Requests und ähnlichen Aktionen zu verwenden.
+---
+
+## 📄 Lizenz
+
+Dieses Projekt steht unter der MIT-Lizenz - Details finden Sie in der [LICENSE](../LICENSE)-Datei.
 
 <div align="center">
 

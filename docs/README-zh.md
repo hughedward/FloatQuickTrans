@@ -102,10 +102,10 @@ pnpm build:linux  # Linux
 ### 支持的提供商
 | 提供商 | 需要API密钥 | 功能 |
 |----------|------------------|----------|
-| OpenAI | ✅ | GPT-3.5, GPT-4, GPT-4o |
+| OpenAI | ❌ | GPT-3.5, GPT-4, GPT-4o |
 | DeepSeek | ✅ | 高质量翻译 |
 | Google Gemini | ✅ | 先进的AI能力 |
-| Claude | ✅ | Anthropic的语言模型 |
+| Claude | ❌ | Anthropic的语言模型 |
 
 ---
 
@@ -146,6 +146,15 @@ src/
 ├── preload/        # Electron 预加载脚本
 └── model/          # AI提供商 & 语言映射
 ```
+
+### 🫰参与贡献
+我们欢迎社区贡献！若您想参与贡献，请按以下步骤操作：
+1.  Fork本代码库
+2.  创建特性分支（`git checkout -b feature/惊艳功能`/`git checkout -b bugfix/修复-xxx问题`）
+3.  提交更改（`git commit -m '新增惊艳功能'`/`git commit -m '修复xxx问题:xxxx'`）。修改后请用描述性信息/简写提交，代码中请尽可能添加注释说明。
+4.  推送至分支（`git push origin feature/惊艳功能`/`git push origin bugfix/修复-xxx问题`）。请保持代码整洁。
+5.  发起拉取请求。建议每次专注于单个功能或修复，避免一次性提交过多改动。
+6.  我们将审核您的PR并在准备就绪后合并。若您愿意协助审核其他PR，我们也将不胜感激！
 
 ---
 
