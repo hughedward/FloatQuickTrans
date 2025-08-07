@@ -46,6 +46,8 @@
 ### 设置面板
 
 > search https://aistudio.google.com/app/apikey to get an api key for gemini
+> Go https://aistudio.google.com/app/apikey 🧚‍♀️
+> Or https://platform.deepseek.com/usage 🐳
 
 <img src="imgs/image-20250717150501965.png" width="600" height="400">
 
