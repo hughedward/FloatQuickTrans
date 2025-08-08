@@ -5,6 +5,7 @@
 **A Professional Floating AI Translation Tool**
 
 *Real-time streaming translation • Multi-window support • Text-to-speech • Always on top*
+❗️严禁他人将本软件直接下载，加上 “会员/升级“按钮 后上传到 app store 等的行为，谢谢
 
 [![Version](https://img.shields.io/badge/version-1.0.12-blue.svg)](https://github.com/hughedward/FloatQuickTrans)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/hughedward/FloatQuickTrans)
