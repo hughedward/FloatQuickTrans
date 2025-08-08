@@ -6,6 +6,8 @@
 
 *实时流式翻译 • 多窗口支持 • 语音朗读 • 始终置顶*
 
+**❗️严禁他人将本软件直接下载，加上 “会员/升级“按钮 后上传到 app store 等的行为，谢谢**
+
 [![版本](https://img.shields.io/badge/版本-1.0.12-blue.svg)](https://github.com/hughedward/FloatQuickTrans)
 [![平台](https://img.shields.io/badge/平台-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/hughedward/FloatQuickTrans)
 [![许可证](https://img.shields.io/badge/许可证-MIT-green.svg)](../LICENSE)
