@@ -142,3 +142,5 @@ src/
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=hughedward/FloatQuickTrans&type=Date)](https://www.star-history.com/#hughedward/FloatQuickTrans&Date)
+
+現在失業中で、私の日本語はあまり上手ではありませんが、もし会社が語学研修と就労ビザを提供してくださるなら、とても嬉しいです。
