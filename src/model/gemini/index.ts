@@ -6,7 +6,7 @@ import { StreamCallback, ModelInfo } from '../aiApi'
 // 🎯 Gemini翻译配置
 const GEMINI_CONFIG = {
   apiKey: '', // 🔑 默认为空，运行时从localStorage获取
-  model: 'gemini-1.5-flash', // 使用最新的Flash模型，支持流式
+  model: 'gemini-2.5-flash', // 使用最新的Flash模型，支持流式
   generationConfig: {
     temperature: 0.1, // 低温度确保翻译准确性
     maxOutputTokens: 2000
