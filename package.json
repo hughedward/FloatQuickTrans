@@ -1,6 +1,6 @@
 {
   "name": "FloatQuickTrans",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "example.com",
