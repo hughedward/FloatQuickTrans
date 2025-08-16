@@ -53,8 +53,8 @@
 Floating window stays above all applications
 
 ---
-<img width="180" height="83" alt="image" src="https://github.com/user-attachments/assets/8c778713-f022-4353-8828-b50546800b54" /><img width="162" height="83" alt="image" src="https://github.com/user-attachments/assets/71a261be-285d-4a0a-9cdd-cd1332c19ff4" />
- <img src="imgs/image-20250717153112790.png">
+<img width="108" height="26" alt="image" src="https://github.com/user-attachments/assets/1938a71e-8b8a-4d58-9c44-851551915215" />
+<img width="183" height="134" alt="image" src="https://github.com/user-attachments/assets/55bed619-f009-4f2a-a82c-a30662275f6b" />
 
 
 
